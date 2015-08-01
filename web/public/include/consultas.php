@@ -1,6 +1,6 @@
 <?php 
 
-include ("conf.php");
+include("conf.php");
 if (!$basedatos) {
 	echo "<br><CENTER><span class=\"tex_menu\">
 				                               Problemas de conexion con la base de datos.
