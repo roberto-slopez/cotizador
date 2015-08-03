@@ -41,5 +41,8 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# ENV-DEV
 .idea
 vendor
+schema.zip

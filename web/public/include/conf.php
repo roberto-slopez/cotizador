@@ -6,7 +6,7 @@ $conexion = mysql_connect("localhost", "root", "");
 
 //$conexion = mysql_connect("localhost", "britcons_raber", "rafael7961");
 
-$basedatos = mysql_select_db('britcons_cotizador', $conexion);
+$basedatos = mysql_select_db('cotizacion', $conexion);
 
 
 

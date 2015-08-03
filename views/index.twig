@@ -8,143 +8,47 @@
     <link href="/public/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<p>
 <div class="row">
     <div class="col-md-2"></div>
 
     <div class="col-md-8">
         <img src="/public/img/logo.png" alt="" class="img-thumbnail">
+
         <div class="page-header">
             <h1>Cotizador en línea</h1>
         </div>
         <div class="alert alert-warning" role="alert">
-            <a href="#" class="alert-link">Los valores diferentes a pesos se liquidan a la tasa CB del día. Sujetos a cambios sin previo aviso.</a>
+            <a href="#" class="alert-link">
+                Los valores diferentes a pesos se liquidan a la tasa CB del día. Sujetos a
+                cambios sin previo aviso.
+            </a>
         </div>
 
         <form action="/public/include/print.php" method="post">
             <div class="row">
-                <!-- Primer segmento -->
+                {#<!-- Primer segmento -->#}
                 <div class="col-md-4">
-                    <h4>Curso</h4>
-                    <?php
-							include('include/consultas.php');
-							?>
-                    <h4>País</h4>
-                    <select class="form-control" name="select_pais" id="select_pais" disabled>
-                        <option value="" disabled selected>Seleccione</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
-                    <h4>Ciudad</h4>
-                    <select class="form-control" id="select_ciudad">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
-                    <h4>Centro</h4>
-                    <select class="form-control" id="select_centro">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
-                    <h4>Semanas</h4>
-                    <select class="form-control" id="select_semanas">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
-                    <h4>Lecciones por semana</h4>
-                    <select class="form-control" id="select_lecciones">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
-                    <h4>Jornada de lecciones</h4>
-                    <select class="form-control" id="select_jornada">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
+                    {{ form_widget(form._token) }}
+                    {{ form_row(form.curso, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.pais, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.ciudad, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.centro, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.semanas, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.lecciones_por_semana, {'attr': {'class': 'form-control'}}) }}
                 </div>
-                <!-- Segundo segmento -->
+                {#<!-- Segundo segmento -->#}
                 <div class="col-md-4" id="paso_2">
-                    <h4>Alojamiento</h4>
-                    <select class="form-control" id="select_alojamiento">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
-                    <h4>Semanas de alojamiento</h4>
-                    <select class="form-control" id="select_semanas_alojamiento">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
-                    <h4>Tipo de alojamiento</h4>
-                    <select class="form-control" id="select_tipo_alojamiento">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
-                    <h4>Tipo de habitación</h4>
-                    <select class="form-control" id="select_tipo_habitacion">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
-                    <h4>Alimentación</h4>
-                    <select class="form-control" id="select_alimentacion">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
-                    <h4>Traslado</h4>
-                    <select class="form-control" id="select_traslado">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
-                    <h4>Seguro</h4>
-                    <select class="form-control" id="select_seguro">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
+                    {{ form_row(form.alojamiento, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.semanas_de_alojamiento, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.tipo_de_alojamiento, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.tipo_de_habitacion, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.alimentacion, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.traslado, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.seguro, {'attr': {'class': 'form-control'}}) }}
                 </div>
-                <!-- Tercer segmento -->
+                {#<!-- Tercer segmento -->#}
                 <div class="col-md-4" id="paso_3">
-                    <h4>Moneda</h4>
-                    <select class="form-control" id="select_moneda" hidden>
-                        <option>COP</option>
-                        <option>USD</option>
-                        <option>EURO</option>
-                    </select>
+                    {{ form_row(form.moneda, {'attr': {'class': 'form-control'}}) }}
                     <p></p>
                     <ul class="list-group" id="list_valores">
                         <li class="list-group-item">
@@ -192,15 +96,13 @@
 
             </div>
         </form>
-
     </div>
-
     <div class="col-md-2"></div>
 </div>
 
-
 <footer>
     <p></p>
+
     <p></p>
 </footer>
 

@@ -9,3 +9,5 @@ if (php_sapi_name() === 'cli-server' && is_file($filename)) {
 
 $app = require __DIR__.'/../APP/app.php';
 $app->run();
+
+// ejecutar en la terminal o consola: php -S localhost:8080 -t web web/index.php

@@ -17,7 +17,7 @@ $app->register(
     new \Arseniew\Silex\Provider\IdiormServiceProvider(),
     [
         'idiorm.db.options' => [
-            'connection_string' => 'mysql:host=localhost;dbname=Prueba',
+            'connection_string' => 'mysql:host=localhost;dbname=cotizacion',
             'username' => 'root',
             'password' => '',
         ]
