@@ -1,8 +1,9 @@
 $(function(){
 
-	//Valores select
-	var $VALOR_SELECT_CURSO = $('#select_curso');
-	var $VALOR_SELECT_PAIS = $('#select_pais');
+	//Select (los nombres siempre son form_(el select) ver CotizadorController:105 para los nombres de los selects)
+	var $selectCurso = $('#form_curso');
+	var $selectPais = $('#form_pais');
+	var $selectCiudad = $('#form_ciudad');
 
 	function onLoad(){
 		$('#list_valores').hide();
@@ -11,18 +12,36 @@ $(function(){
 		$('#paso_3').hide();
 	}
 
-		$VALOR_SELECT_CURSO.on('change', function(event) {
-
-			if($VALOR_SELECT_CURSO.val() != '[ Seleccione ]'){
-				$VALOR_SELECT_PAIS.attr('disabled', false);
+		$selectCurso.on('change', function(event) {
+			if($selectCurso.val() != '[ Seleccione ]'){
+				$selectPais.attr('disabled', false);
 				$('#list_valores').slideToggle('slow');
 				$('#boton_imprimir').slideToggle('slow');
 				$('#paso_2').slideToggle('slow');
 				$('#paso_3').slideToggle('slow');
 			}else{
-				$VALOR_SELECT_PAIS.attr('disabled', true);
-
+				$selectPais.attr('disabled', true);
 			}
 		});
+
+		//Cuando cambie el pais hidratar select cidudad
+		$selectPais.on('change', function(event) {
+			$selectCiudad.empty();
+			$selectCiudad.append('<option value="">[ Seleccione ]</option>');
+			hidrateCiudades();
+		});
+
+		//Agregar datos al select Ciudad
+		function hidrateCiudades() {
+			var url = '/pais/'+$selectPais.val();
+			$.post(url, function(data) {
+				var ciudades =  $.parseJSON(data);
+				$.each(ciudades,function(key, value)
+				{
+					$selectCiudad.append('<option value=' + key + '>' + value + '</option>');
+				});
+
+			}, "html");
+		}
 	onLoad();
 });

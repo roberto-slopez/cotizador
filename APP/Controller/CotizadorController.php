@@ -37,7 +37,30 @@ class CotizadorController implements ControllerProviderInterface
          */
         $factory = $app['controllers_factory'];
         $factory->get('/', 'APP\Controller\CotizadorController::index');
+        $factory->post('/pais/{id}', 'APP\Controller\CotizadorController::getPais');
         return $factory;
+    }
+
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @param $id
+     * @return JsonResponse
+     */
+     public function getPais(Application $app, Request $request, $id)
+    {
+        $ciudades = $app['idiorm.db']
+            ->for_table('ciudad')
+            ->where('idPais', $id)
+            ->findMany()
+        ;
+
+        $elemento = [];
+        foreach ($ciudades as $ciudad) {
+            $elemento[$ciudad->idCiudad]=$ciudad->nombre;
+        }
+
+        return new JsonResponse($elemento);
     }
 
     /**
@@ -59,11 +82,11 @@ class CotizadorController implements ControllerProviderInterface
 
         $elementos = [];
         foreach ($cursos as $elemento) {
-            $elementos['curso'][] = $elemento->nombre;
+            $elementos['curso'][$elemento->idCurso] = $elemento->nombre;
         }
 
         foreach ($paises as $elemento) {
-            $elementos['pais'][] = $elemento->nombre;
+            $elementos['pais'][$elemento->idPais] = $elemento->nombre;
         }
 
         $form = $this->getForm($app['form.factory'], $elementos);
