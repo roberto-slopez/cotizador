@@ -1,5 +1,5 @@
 #Cotizador V 0.1
-### <font color="red">¡Se agrego la carpeta vendor a git por que el cliente usa un webshare!</font> 
+### <font color="red">ï¿½Se agrego la carpeta vendor a git por que el cliente usa un webshare!</font> 
 
 ## Cambios de la version
 - Se agrego silex como base para desarrollo. 
@@ -12,4 +12,6 @@ Cotizador anterior: http://consejeriaestudiosenelexterior.com/bk-cb/cotizacion/c
 - Se agrego forms de symfony2 para manejar los selects
 - Se agregaron los dato iniciales a los selects, curso y pais.
 - Hidratar ciudad deacuerdo a select pais
-- <font color="red">En desarrollo verificar de donde se saca la información para los centros</font>
+- <font color="red">En desarrollo verificar de donde se saca la informaciÃ³n para los centros</font>
+
+<b>Ejecutar en la consola o termina (solo modo desarrollo): php -S localhost:8080 -t web web/index.php</b>

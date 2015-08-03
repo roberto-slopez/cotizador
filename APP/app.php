@@ -19,7 +19,7 @@ $app->register(
         'idiorm.db.options' => [
             'connection_string' => 'mysql:host=localhost;dbname=cotizacion',
             'username' => 'root',
-            'password' => '',
+            'password' => '1234',
         ]
     ]
 );
