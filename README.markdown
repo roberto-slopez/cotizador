@@ -1,5 +1,5 @@
 #Cotizador V 0.1
-### <font color="red">�Se agrego la carpeta vendor a git por que el cliente usa un webshare!</font> 
+### <font color="red">¡Se agrego la carpeta vendor a git por que el cliente usa un webshare!</font> 
 
 ## Cambios de la version
 - Se agrego silex como base para desarrollo. 
