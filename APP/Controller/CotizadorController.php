@@ -52,9 +52,18 @@ class CotizadorController implements ControllerProviderInterface
             ->findMany()
         ;
 
+        $paises = $app['idiorm.db']
+            ->for_table('pais')
+            ->findMany()
+        ;
+
         $elementos = [];
         foreach ($cursos as $elemento) {
             $elementos['curso'][] = $elemento->nombre;
+        }
+
+        foreach ($paises as $elemento) {
+            $elementos['pais'][] = $elemento->nombre;
         }
 
         $form = $this->getForm($app['form.factory'], $elementos);
@@ -70,8 +79,8 @@ class CotizadorController implements ControllerProviderInterface
     private function getForm(FormFactory $formFactory, $registros = [])
     {
         $formBuilder = $formFactory->createBuilder('form', [])
-            ->add('curso', 'choice', ['choices' => $registros, 'placeholder' => '[ Seleccione ]'])
-            ->add('pais', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
+            ->add('curso', 'choice', ['choices' => $registros['curso'], 'placeholder' => '[ Seleccione ]'])
+            ->add('pais', 'choice', ['choices' => $registros['pais'], 'placeholder' => '[ Seleccione ]'])
             ->add('ciudad', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
             ->add('centro', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
             ->add('semanas', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
