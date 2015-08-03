@@ -10,5 +10,6 @@ Cotizador anterior: http://consejeriaestudiosenelexterior.com/bk-cb/cotizacion/c
 
 ## Avance. 
 - Se agrego forms de symfony2 para manejar los selects
-- Se agregaron los dato iniciales a los selects, curso y pais. 
-- <font color="red">En desarrollo lenar ciudad deacuerdo a select pais.</font>
+- Se agregaron los dato iniciales a los selects, curso y pais.
+- Hidratar ciudad deacuerdo a select pais
+- <font color="red">En desarrollo verificar de donde se saca la información para los centros</font>
