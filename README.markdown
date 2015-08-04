@@ -10,8 +10,10 @@ Cotizador anterior: http://consejeriaestudiosenelexterior.com/bk-cb/cotizacion/c
 
 ## Avance. 
 - Se agrego forms de symfony2 para manejar los selects
-- Se agregaron los dato iniciales a los selects, curso y pais.
-- Hidratar ciudad deacuerdo a select pais
-- <font color="red">En desarrollo verificar de donde se saca la información para los centros</font>
+- Se agregaron los dato iniciales al select curso.
+- Hidratar pais
+- Hidratar ciudad
+- Hidratar centro
+- Hidratar semanas
 
 <b>Ejecutar en la consola o termina (solo modo desarrollo): php -S localhost:8080 -t web web/index.php</b>
