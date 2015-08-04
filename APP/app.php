@@ -30,6 +30,9 @@ $app->register(new Silex\Provider\TwigServiceProvider(), [
     ]
 );
 $app['twig']->addExtension(new \Entea\Twig\Extension\AssetExtension($app));
+$app['cotizacion.repository'] = $app->share(function() use ($app) {
+    return new \APP\Repository\CotizacionRepository($app['idiorm.db']);
+});
 
 $app->mount('/', new APP\Controller\CotizadorController());
 
