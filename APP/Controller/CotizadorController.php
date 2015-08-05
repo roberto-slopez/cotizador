@@ -47,11 +47,11 @@ class CotizadorController implements ControllerProviderInterface
         $factory->post('/moneda/{id}', 'APP\Controller\CotizadorController::getMoneda');
         $factory->post('/semana/{idCentro}/{nombreCurso}', 'APP\Controller\CotizadorController::getSemanasCurso');
         $factory->post(
-            '/semana/{idCentro}/{nombreCurso}/{semanasCurso}',
+            '/semanalecciones/{idCentro}/{nombreCurso}/{semanasCurso}',
             'APP\Controller\CotizadorController::getLeccionesSemana'
         );
         $factory->post(
-            '/semana/{idCentro}/{nombreCurso}/{semanasCurso}/{leccionesSemana}',
+            '/jornadalecciones/{idCentro}/{nombreCurso}/{semanasCurso}/{leccionesSemana}',
             'APP\Controller\CotizadorController::getJornadaLecciones'
         );
 
@@ -173,7 +173,7 @@ class CotizadorController implements ControllerProviderInterface
             ->add('jornada_de_lecciones', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
             // Segunda sección
             ->add('alojamiento', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
-            ->add('semanas_de_alojamiento', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
+            ->add('semanas_de_alojamiento', 'choice', ['choices' => range(1,52), 'placeholder' => '[ Seleccione ]'])
             ->add('tipo_de_alojamiento', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
             ->add('tipo_de_habitacion', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
             ->add('alimentacion', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])

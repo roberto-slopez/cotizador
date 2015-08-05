@@ -8,6 +8,15 @@ $(function(){
 	var $selectCiudad = $('#form_ciudad');
 	var $selectCentro = $('#form_centro');
 	var $selectSemanas = $('#form_semanas');
+	var $selectLeccionesSemana = $('#form_lecciones_por_semana');
+	var $selectJornadaLecciones = $('#form_jornada_de_lecciones');
+	var $selectAlojamiento = $('#form_alojamiento');
+	var $selectSemanaAlojamiento = $('#form_semanas_de_alojamiento');
+	var $selectTipoAlojamiento = $('#form_tipo_de_alojamiento');
+	var $selectTipoHabitacion = $('#form_tipo_de_habitacion');
+	var $selectAlimentacion = $('#form_alimentacion');
+	var $selectTraslado = $('#form_traslado');
+	var $selectSeguro = $('#form_seguro');
 
 	function onLoad(){
 		$('#list_valores').hide();
@@ -51,7 +60,20 @@ $(function(){
 		$selectSemanas.empty();
 		$selectSemanas.append('<option value="">[ Seleccione ]</option>');
 		hidrateSemanas();
-	})
+	});
+
+	$selectSemanas.on('change', function(event) {
+		$selectLeccionesSemana.empty();
+		$selectLeccionesSemana.append('<option value="">[ Seleccione ]</option>');
+		hidrateLeccionesSemana();
+	});
+
+	$selectLeccionesSemana.on('change', function(event) {
+		$selectJornadaLecciones.empty();
+		$selectJornadaLecciones.append('<option value="">[ Seleccione ]</option>');
+		hidrateJornada();
+	});
+
 	function setMonedaByPais() {
 		var url = '/moneda/'+$selectPais.val();
 		$.post(url, function(value) {
@@ -74,7 +96,7 @@ $(function(){
 
 	//Agregar datos al select Ciudad
 	function hidrateCiudades() {
-		var url = '/ciudad/'+$selectPais.val();
+		var url = '/ciudad/'+$selectCurso.val();
 		$.post(url, function(data) {
 			var ciudades =  $.parseJSON(data);
 			$.each(ciudades,function(key, value)
@@ -97,6 +119,7 @@ $(function(){
 
 		}, "html");
 	}
+
 	//Agregar datos al select Semanas
 	function hidrateSemanas() {
 		var url = '/semana/'+$selectCentro.val()+'/'+$selectCurso.val();
@@ -112,12 +135,12 @@ $(function(){
 
 	//Agregar datos al select Centro
 	function hidrateLeccionesSemana() {
-		var url = '/centro/'+$selectCiudad.val();
+		var url = '/semanalecciones/'+$selectCentro.val()+'/'+$selectCurso.val()+'/'+$selectSemanas.val();
 		$.post(url, function(data) {
 			var ciudades =  $.parseJSON(data);
 			$.each(ciudades,function(key, value)
 			{
-				$selectCentro.append('<option value=' + key + '>' + value + '</option>');
+				$selectLeccionesSemana.append('<option value=' + key + '>' + value + '</option>');
 			});
 
 		}, "html");
@@ -125,12 +148,12 @@ $(function(){
 
 	//Agregar datos al select Centro
 	function hidrateJornada() {
-		var url = '/centro/'+$selectCiudad.val();
+		var url = '/jornadalecciones/'+$selectCentro.val()+'/'+$selectCurso.val()+'/'+$selectSemanas.val()+'/'+$selectLeccionesSemana.val();
 		$.post(url, function(data) {
 			var ciudades =  $.parseJSON(data);
 			$.each(ciudades,function(key, value)
 			{
-				$selectCentro.append('<option value=' + key + '>' + value + '</option>');
+				$selectJornadaLecciones.append('<option value=' + key + '>' + value + '</option>');
 			});
 
 		}, "html");
