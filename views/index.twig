@@ -24,7 +24,7 @@
             </a>
         </div>
 
-        <form action="/public/include/print.php" method="post">
+        <form action="" method="post" role="form" >
             <div class="row">
                 {#<!-- Primer segmento -->#}
                 <div class="col-md-4">
@@ -53,46 +53,51 @@
                     <p></p>
                     <ul class="list-group" id="list_valores">
                         <li class="list-group-item">
-                            <span class="badge">$0</span>
+                            <span class="badge" id="CURSO">$0</span>
                             CURSO
                         </li>
                         <li class="list-group-item">
-                            <span class="badge">$0</span>
+                            <span class="badge" id="REGISTRO">$0</span>
                             REGISTRO
                         </li>
                         <li class="list-group-item">
-                            <span class="badge">$0</span>
+                            <span class="badge" id="MATERIALES">$0</span>
                             MATERIALES
                         </li>
                         <li class="list-group-item">
-                            <span class="badge">$0</span>
+                            <span class="badge" id="ESTADIA">$0</span>
                             ESTADIA
                         </li>
                         <li class="list-group-item">
-                            <span class="badge">$0</span>
+                            <span class="badge" id="TRASLADO">$0</span>
                             TRASLADO
                         </li>
                         <li class="list-group-item">
-                            <span class="badge">$0</span>
+                            <span class="badge" id="FINANCIEROS">$0</span>
                             FINANCIEROS
                         </li>
                         <li class="list-group-item">
-                            <span class="badge">$0</span>
+                            <span class="badge" id="ASISTENCIA">$0</span>
                             ASISTENCIA
                         </li>
                         <li class="list-group-item">
-                            <span class="badge">$0</span>
+                            <span class="badge" id="VISA">$0</span>
                             VISA
                         </li>
                         <li class="list-group-item">
-                            <span class="badge">$0</span>
+                            <span class="badge" id="TOTAL">$0</span>
                             TOTAL
                         </li>
                     </ul>
-                    <p></p>
-                    <button type="submit" class="btn btn-success" id="boton_imprimir">
-                        <span class="glyphicon glyphicon-print" aria-hidden="true"></span> IMPRIMIR
-                    </button>
+                    <br/>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" id="boton_calcular">
+                            <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span> CALCULAR
+                        </button>
+                        <button type="submit" class="btn btn-success" id="boton_imprimir">
+                            <span class="glyphicon glyphicon-print" aria-hidden="true"></span> IMPRIMIR
+                        </button>
+                    </div>
                 </div>
 
             </div>

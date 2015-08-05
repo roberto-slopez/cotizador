@@ -239,7 +239,7 @@ class CotizacionRepository
         $cursoSemanas = $curso->semanasCurso;
         $curso = $this->orm
             ->for_table('curso')
-            ->where('idCurso', $semanasCurso)
+            ->where('idCurso', $leccionesSemana)
             ->findOne()
         ;
         $semanaLecciones = $curso->leccionesSemana;
@@ -260,6 +260,82 @@ class CotizacionRepository
             $elementos[$jornadaLecciones->idCurso] = $jornadaLecciones->jornadaLecciones;
         }
 
+        return $elementos;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDatosTipoAlojamiento()
+    {
+        $datos = $this->orm
+            ->for_table('t_hospedaje')
+            ->findMany()
+        ;
+
+        $elementos = [];
+        foreach ($datos as $dato) {
+            $elementos[$dato->id] = $dato->hospedaje;
+        }
+
+        return $elementos;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDatosTipoHabitacion()
+    {
+        $datos = $this->orm
+            ->for_table('tipoalojamiento')
+            ->findMany()
+        ;
+
+        $elementos = [];
+        foreach ($datos as $dato) {
+            $elementos[$dato->idTipoAlojamiento] = $dato->tipoHabitacion;
+        }
+
+        return $elementos;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDatosTipoAlimentacion()
+    {
+        $datos = $this->orm
+            ->for_table('tipoalimentacion')
+            ->findMany()
+        ;
+
+        $elementos = [];
+        foreach ($datos as $dato) {
+            $elementos[$dato->idTipoAlimentacion] = $dato->tipoAlimentacion;
+        }
+        return $elementos;
+    }
+
+    /**
+     * @param $pais
+     * @param $ciudad
+     * @param $centro
+     * @param $semanas
+     * @param $lecciones
+     * @param $jornadas
+     * @return array
+     */
+    public function getResultCalculo($pais, $ciudad, $centro, $semanas, $lecciones, $jornadas)
+    {
+        $datos = $this->orm
+            ->for_table('tipoalimentacion')
+            ->findMany()
+        ;
+
+        $elementos = [];
+        foreach ($datos as $dato) {
+            $elementos[$dato->idTipoAlimentacion] = $dato->tipoAlimentacion;
+        }
         return $elementos;
     }
 }

@@ -74,6 +74,12 @@ $(function(){
 		hidrateJornada();
 	});
 
+	$selectAlojamiento.on('change', function(event) {
+		if ($selectAlojamiento.val() == 'SI') {
+			hidrateSelectsForAlojamiento()
+		}
+	});
+
 	function setMonedaByPais() {
 		var url = '/moneda/'+$selectPais.val();
 		$.post(url, function(value) {
@@ -154,6 +160,39 @@ $(function(){
 			$.each(ciudades,function(key, value)
 			{
 				$selectJornadaLecciones.append('<option value=' + key + '>' + value + '</option>');
+			});
+
+		}, "html");
+	}
+
+	function hidrateSelectsForAlojamiento() {
+		var urlAlojamiento = '/tipoAlojamiento';
+		var urlHabitacion = '/tipoHabitacion';
+		var urlAlimentacion = '/tipoAlimentacion';
+
+		$.post(urlAlojamiento, function(data) {
+			var datos =  $.parseJSON(data);
+			$.each(datos,function(key, value)
+			{
+				$selectTipoAlojamiento.append('<option value=' + key + '>' + value + '</option>');
+			});
+
+		}, "html");
+
+		$.post(urlHabitacion, function(data) {
+			var datos =  $.parseJSON(data);
+			$.each(datos,function(key, value)
+			{
+				$selectTipoHabitacion.append('<option value=' + key + '>' + value + '</option>');
+			});
+
+		}, "html");
+
+		$.post(urlAlimentacion, function(data) {
+			var datos =  $.parseJSON(data);
+			$.each(datos,function(key, value)
+			{
+				$selectAlimentacion.append('<option value=' + key + '>' + value + '</option>');
 			});
 
 		}, "html");
