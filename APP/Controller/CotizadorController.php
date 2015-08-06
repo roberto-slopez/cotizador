@@ -8,6 +8,7 @@
 
 namespace APP\Controller;
 
+use APP\Form\Type\CotizacionType;
 use APP\Repository\CotizacionRepository;
 use Arseniew\Silex\Service\IdiormService;
 use Symfony\Component\Form\FormFactory;
@@ -57,6 +58,10 @@ class CotizadorController implements ControllerProviderInterface
         $factory->post('/tipoAlojamiento', 'APP\Controller\CotizadorController::getTipoAlojamiento');
         $factory->post('/tipoHabitacion', 'APP\Controller\CotizadorController::getTipoHabitacion');
         $factory->post('/tipoAlimentacion', 'APP\Controller\CotizadorController::getTipoAlimentacion');
+        $factory->post(
+            '/cotizacion/{curso}/{pais}/{semanas}/{lecciones}/{jornadas}/{moneda}/{cuidad}/{centro}/{alojamiento}/{semanasAlojamiento}/{tipoAlojamiento}/{tipoHabitacion}/{tipoAlimentacion}/{traslado}/{seguro}',
+            'APP\Controller\CotizadorController::getCotizacion'
+        );
 
         return $factory;
     }
@@ -68,7 +73,9 @@ class CotizadorController implements ControllerProviderInterface
      */
     public function index(Application $app, Request $request)
     {
-        $form = $this->getForm($app['form.factory'], $app['cotizacion.repository']->getDatosIniciales());
+        $form = $app['form.factory']
+            ->create(new CotizacionType($app['cotizacion.repository']->getDatosIniciales()), [])
+        ;
 
         return $app['twig']->render('index.twig', ['form' => $form->createView()]);
     }
@@ -186,41 +193,62 @@ class CotizadorController implements ControllerProviderInterface
     }
 
     /**
-     * @param FormFactory $formFactory
-     * @param array $registros
-     * @return \Symfony\Component\Form\Form
-     */
-    private function getForm(FormFactory $formFactory, $registros = [])
-    {
-        $formBuilder = $formFactory->createBuilder('form', [])
-            // Primera sección
-            ->add('curso', 'choice', ['choices' => $registros['curso'], 'placeholder' => '[ Seleccione ]'])
-            ->add('pais', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
-            ->add('ciudad', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
-            ->add('centro', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
-            ->add('semanas', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
-            ->add('lecciones_por_semana', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
-            ->add('jornada_de_lecciones', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
-            // Segunda sección
-            ->add('alojamiento', 'choice', ['choices' => ['SI'=>'Si','NO'=>'No'], 'placeholder' => '[ Seleccione ]'])
-            ->add('semanas_de_alojamiento', 'choice', ['choices' => range(1,52), 'placeholder' => '[ Seleccione ]'])
-            ->add('tipo_de_alojamiento', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
-            ->add('tipo_de_habitacion', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
-            ->add('alimentacion', 'choice', ['choices' => [], 'placeholder' => '[ Seleccione ]'])
-            ->add('traslado', 'choice', ['choices' => ['SI'=>'Si','NO'=>'No'], 'placeholder' => '[ Seleccione ]'])
-            ->add('seguro', 'choice', ['choices' => ['SI'=>'Si','NO'=>'No'], 'placeholder' => '[ Seleccione ]'])
-            // Tercera sección
-            ->add('moneda', 'choice', ['choices' => $registros['moneda'], 'placeholder' => '[ Seleccione ]']);
-
-        return $formBuilder->getForm();
-    }
-
-    /**
+     * Calcula datos y guarda datos en session para su uso posterior en imprimir.
+     *
      * @param Application $app
+     * @param $curso
+     * @param $pais
+     * @param $semanas
+     * @param $lecciones
+     * @param $jornadas
+     * @param $moneda
+     * @param $cuidad
+     * @param $centro
+     * @param $alojamiento
+     * @param $semanasAlojamiento
+     * @param $tipoAlojamiento
+     * @param $tipoHabitacion
+     * @param $tipoAlimentacion
+     * @param $traslado
+     * @param $seguro
      * @return JsonResponse
      */
-    public function getCalculoCosto(Application $app, $pais, $ciudad, $centro, $semanas, $lecciones, $jornadas)
-    {
-        return new JsonResponse($app['cotizacion.repository']->getDatosTipoAlojamiento());
+    public function getCotizacion(
+        Application $app,
+        $curso,
+        $pais,
+        $semanas,
+        $lecciones,
+        $jornadas,
+        $moneda,
+        $cuidad,
+        $centro,
+        $alojamiento,
+        $semanasAlojamiento,
+        $tipoAlojamiento,
+        $tipoHabitacion,
+        $tipoAlimentacion,
+        $traslado,
+        $seguro
+    ) {
+        return new JsonResponse(
+            $app['cotizacion.repository']->getDatosTipoAlojamiento(
+                $curso,
+                $pais,
+                $semanas,
+                $lecciones,
+                $jornadas,
+                $moneda,
+                $cuidad,
+                $centro,
+                $alojamiento,
+                $semanasAlojamiento,
+                $tipoAlojamiento,
+                $tipoHabitacion,
+                $tipoAlimentacion,
+                $traslado,
+                $seguro
+            )
+        );
     }
 }

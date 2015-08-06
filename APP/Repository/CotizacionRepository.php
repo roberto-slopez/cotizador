@@ -32,10 +32,11 @@ class CotizacionRepository
     {
         $cursos = $this->orm
             ->for_table('curso')
+            ->group_by('nombre')
             ->findMany();
 
         $monedas = $this->orm
-            ->for_table('moneda')
+            ->for_table('monedas')
             ->findMany();
 
         $elementos = [];
@@ -44,7 +45,7 @@ class CotizacionRepository
         }
 
         foreach ($monedas as $elemento) {
-            $elementos['moneda'][$elemento->sigla] = $elemento->nombreMoneda;
+            $elementos['moneda'][$elemento->sigla] = $elemento->moneda;
         }
 
         return $elementos;
@@ -317,18 +318,87 @@ class CotizacionRepository
     }
 
     /**
+     * @param $curso
      * @param $pais
-     * @param $ciudad
-     * @param $centro
      * @param $semanas
      * @param $lecciones
      * @param $jornadas
+     * @param $moneda
+     * @param $cuidad
+     * @param $centro
+     * @param bool|false $alojamiento
+     * @param $semanasAlojamiento
+     * @param $tipoAlojamiento
+     * @param $tipoHabitacion
+     * @param $tipoAlimentacion
+     * @param bool|false $traslado
+     * @param bool|false $seguro
      * @return array
      */
-    public function getResultCalculo($pais, $ciudad, $centro, $semanas, $lecciones, $jornadas)
+    public function getResultCalculo(
+        $curso,
+        $pais,
+        $semanas,
+        $lecciones,
+        $jornadas,
+        $moneda,
+        $cuidad,
+        $centro,
+        $alojamiento = false,
+        $semanasAlojamiento,
+        $tipoAlojamiento,
+        $tipoHabitacion,
+        $tipoAlimentacion,
+        $traslado = false,
+        $seguro = false
+    )
     {
+        /**
+        CURSO(badge) = valorCurso
+        REGISTRO(badge) = valorInscripcion
+        MATERIALES(badge) = materiales
+        ESTADIA(badge) = alojamiento + alimentacion
+        TRASLADO(badge) = traslado
+        FINANCIEROS(badge) = gastosEnvio
+        SEGURO(badge) = Elminarlo del badge
+        VISA(badge) = derechosVisa
+        todos en la tabla curso?
+
+        TOTAL(badge) = CURSO + REGISTRO + MATERIALES + ESTADIA + TRASLADO + FINANCIEROS + VISA (tipoMoneda)
+         */
+        $datoCurso= $this->orm
+            ->for_table('curso')
+            ->select('nombre')
+            ->where('idCurso', $curso)
+            ->findOne()
+        ;
+
+        $semanasCurso = $this->orm
+            ->for_table('curso')
+            ->select('semanasCurso')
+            ->where('idCurso', $semanas)
+            ->findOne()
+        ;
+        $leccionesSemana = $this->orm
+            ->for_table('curso')
+            ->select('leccionesSemana')
+            ->where('idCurso', $lecciones)
+            ->findOne()
+        ;
+        $jornada = $this->orm
+            ->for_table('curso')
+            ->select('jornadaLecciones')
+            ->where('idCurso', $jornadas)
+            ->findOne()
+        ;
+
         $datos = $this->orm
-            ->for_table('tipoalimentacion')
+            ->for_table('curso')
+            ->where('nombre', $datoCurso->nombre)
+            ->where('idPais', $pais)
+            ->where('semanasCurso', $semanasCurso->semanasCurso)
+            ->where('leccionesSemana', $leccionesSemana->leccionesSemana)
+            ->where('jornadaLecciones', $jornada->jornadaLecciones)
             ->findMany()
         ;
 
