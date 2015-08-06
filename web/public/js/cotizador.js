@@ -82,8 +82,14 @@ $(function () {
         }
     });
 
-    $buttonCalcular.click(function () {
+    $selectTipoHabitacion.on('change', function (event) {
+        if ($selectAlojamiento.val() == 'SI') {
+            hidrateAlimentacion()
+        }
+    });
 
+    $buttonCalcular.click(function () {
+        getValuesBadges();
     });
 
     function setMonedaByPais() {
@@ -168,7 +174,6 @@ $(function () {
     function hidrateSelectsForAlojamiento() {
         var urlAlojamiento = '/tipoAlojamiento';
         var urlHabitacion = '/tipoHabitacion';
-        var urlAlimentacion = '/tipoAlimentacion';
 
         $.post(urlAlojamiento, function (data) {
             var datos = $.parseJSON(data);
@@ -185,7 +190,10 @@ $(function () {
             });
 
         }, "html");
+    }
 
+    function hidrateAlimentacion(){
+        var urlAlimentacion = '/tipoAlimentacion/'+$selectTipoHabitacion.val()+'/'+$selectTipoAlojamiento.val()+'/'+$selectCentro.val();
         $.post(urlAlimentacion, function (data) {
             var datos = $.parseJSON(data);
             $.each(datos, function (key, value) {
@@ -211,20 +219,19 @@ $(function () {
             $selectTipoAlojamiento.val() + '/' +
             $selectTipoHabitacion.val() + '/' +
             $selectAlimentacion.val() + '/' +
-            $selectTraslado.val() + '/' +
-            $selectSeguro.val()
+            $selectTraslado.val()
         ;
         $.post(url, function (data) {
             var datos = $.parseJSON(data);
-            $('#CURSO').html(datos['']);
-            $('#REGISTRO').html(datos['']);
-            $('#MATERIALES').html(datos['']);
-            $('#ESTADIA').html(datos['']);
-            $('#TRASLADO').html(datos['']);
-            $('#FINANCIEROS').html(datos['']);
-            $('#ASISTENCIA').html(datos['']);
-            $('#VISA').html(datos['']);
+            $('#CURSO').html(datos['CURSO']);
+            $('#REGISTRO').html(datos['REGISTRO']);
+            $('#MATERIALES').html(datos['MATERIALES']);
+            $('#ESTADIA').html(datos['ESTADIA']);
+            $('#TRASLADO').html(datos['TRASLADO']);
+            $('#FINANCIEROS').html(datos['FINANCIEROS']);
+            $('#VISA').html(datos['VISA']);
             $('#TOTAL').html(datos['']);
+            $('#ASISTENCIA').html(datos['']);
         }, "html");
     }
 

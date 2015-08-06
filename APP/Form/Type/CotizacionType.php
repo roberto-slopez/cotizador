@@ -82,14 +82,10 @@ class CotizacionType extends AbstractType
                 'placeholder' => '[ Seleccione ]'
             ])
             ->add('alimentacion', 'choice', [
-                'label' => 'Tipo Alimentación',
+                'label' => 'Tipo alimentación',
                 'placeholder' => '[ Seleccione ]'
             ])
             ->add('traslado', 'choice', [
-                'choices' => ['SI'=>'Si','NO'=>'No'],
-                'placeholder' => '[ Seleccione ]'
-            ])
-            ->add('seguro', 'choice', [
                 'choices' => ['SI'=>'Si','NO'=>'No'],
                 'placeholder' => '[ Seleccione ]'
             ])

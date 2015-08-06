@@ -13,6 +13,11 @@ use Symfony\Component\Validator\Constraints\All;
 
 class CotizacionRepository
 {
+    const TIPO_HABITACION_SENCILLA = 'habindividual';
+    const TIPO_HABITACION_DOBLE = 'habdoble';
+    const TIPO_HABITACION_TRIPLE = 'habtriple';
+
+    //const TIPO_HABITACION_
     /**
      * @var IdiormService
      */
@@ -258,7 +263,7 @@ class CotizacionRepository
 
         $elementos = [];
         foreach ($datos as $jornadaLecciones) {
-            $elementos[$jornadaLecciones->idCurso] = $jornadaLecciones->jornadaLecciones;
+            $elementos[$jornadaLecciones->jornadaLecciones] = $jornadaLecciones->jornadaLecciones;
         }
 
         return $elementos;
@@ -268,24 +273,6 @@ class CotizacionRepository
      * @return array
      */
     public function getDatosTipoAlojamiento()
-    {
-        $datos = $this->orm
-            ->for_table('t_hospedaje')
-            ->findMany()
-        ;
-
-        $elementos = [];
-        foreach ($datos as $dato) {
-            $elementos[$dato->id] = $dato->hospedaje;
-        }
-
-        return $elementos;
-    }
-
-    /**
-     * @return array
-     */
-    public function getDatosTipoHabitacion()
     {
         $datos = $this->orm
             ->for_table('tipoalojamiento')
@@ -303,17 +290,50 @@ class CotizacionRepository
     /**
      * @return array
      */
-    public function getDatosTipoAlimentacion()
+    public function getDatosTipoHabitacion()
+    {
+        $elementos[self::TIPO_HABITACION_SENCILLA] = 'Sencilla';
+        $elementos[self::TIPO_HABITACION_DOBLE] = 'Doble';
+        $elementos[self::TIPO_HABITACION_TRIPLE] = 'Triple';
+
+        return $elementos;
+    }
+
+    /**
+     * @param $tipoHabitacion contiene el nombre de la tabla referente al tipo de habitación
+     * @param $tipoAlojamiento
+     * @param $centro
+     * @return array
+     */
+    public function getDatosTipoAlimentacion($tipoHabitacion, $tipoAlojamiento, $centro)
     {
         $datos = $this->orm
-            ->for_table('tipoalimentacion')
-            ->findMany()
+            ->for_table($tipoHabitacion)
+            ->select_many('sinComida', 'desayuno', 'mediaPension', 'completa', 'derechoCocina')
+            ->where('idCentroEducativo', $centro)
+            ->where('tipoAlojamiento', $tipoAlojamiento)
+            ->findOne()
         ;
 
-        $elementos = [];
-        foreach ($datos as $dato) {
-            $elementos[$dato->idTipoAlimentacion] = $dato->tipoAlimentacion;
+        if (!$datos) {
+            $elementos [0]='No Aplica';
+        } elseif ($datos->sinComida == 0 && $datos->desayuno == 0 && $datos->mediaPension == 0 && $datos->completa == 0 && $datos->derechoCocina == 0){
+            $elementos [0]='No Aplica';
+        } else {
+            if ($datos->sinComida != 0) {
+                $elementos[$datos->sinComida] = 'Sin alimentación';
+            }
+            if ($datos->desayuno != 0) {
+                $elementos[$datos->desayuno] = 'Desayuno';
+            }
+            if ($datos->mediaPension != 0) {
+                $elementos[$datos->mediaPension] = 'Desayuno y cena';
+            }
+            if ($datos->derechoCocina != 0) {
+                $elementos[$datos->derechoCocina] = 'Derecho Cocina';
+            }
         }
+
         return $elementos;
     }
 
@@ -332,7 +352,6 @@ class CotizacionRepository
      * @param $tipoHabitacion
      * @param $tipoAlimentacion
      * @param bool|false $traslado
-     * @param bool|false $seguro
      * @return array
      */
     public function getResultCalculo(
@@ -349,21 +368,10 @@ class CotizacionRepository
         $tipoAlojamiento,
         $tipoHabitacion,
         $tipoAlimentacion,
-        $traslado = false,
-        $seguro = false
+        $traslado = false
     )
     {
         /**
-        CURSO(badge) = valorCurso
-        REGISTRO(badge) = valorInscripcion
-        MATERIALES(badge) = materiales
-        ESTADIA(badge) = alojamiento + alimentacion
-        TRASLADO(badge) = traslado
-        FINANCIEROS(badge) = gastosEnvio
-        SEGURO(badge) = Elminarlo del badge
-        VISA(badge) = derechosVisa
-        todos en la tabla curso?
-
         TOTAL(badge) = CURSO + REGISTRO + MATERIALES + ESTADIA + TRASLADO + FINANCIEROS + VISA (tipoMoneda)
          */
         $datoCurso= $this->orm
@@ -392,20 +400,56 @@ class CotizacionRepository
             ->findOne()
         ;
 
-        $datos = $this->orm
+        $dato = $this->orm
             ->for_table('curso')
             ->where('nombre', $datoCurso->nombre)
             ->where('idPais', $pais)
             ->where('semanasCurso', $semanasCurso->semanasCurso)
             ->where('leccionesSemana', $leccionesSemana->leccionesSemana)
             ->where('jornadaLecciones', $jornada->jornadaLecciones)
-            ->findMany()
+            ->findOne()
         ;
 
         $elementos = [];
-        foreach ($datos as $dato) {
-            $elementos[$dato->idTipoAlimentacion] = $dato->tipoAlimentacion;
-        }
+        $elementos['CURSO'] = $dato->valorCurso;
+        $elementos['REGISTRO'] = $dato->valorInscripcion;
+        $elementos['MATERIALES'] = $dato->materiales;
+        $elementos['TRASLADO'] = $dato->traslado;
+        $elementos['FINANCIEROS'] = $dato->gastosEnvio;
+        $elementos['VISA'] = $dato->derechosVisa;
+        $elementos['ESTADIA'] = 0;
+
         return $elementos;
+    }
+
+    /**
+     * @param $tipoHabitacion
+     * @param $tipoAlojamiento
+     */
+    public function getPrecioTipoHabitacion($tipoHabitacion, $tipoAlojamiento, $tipoAlimentacion)
+    {
+        switch ($tipoHabitacion) {
+            case self::TIPO_HABITACION_SENCILLA:
+                $dato = $this->orm
+                    ->for_table('habindividual')
+                    ->where('tipoAlojamiento', $tipoAlojamiento)
+                    ->findOne()
+                ;
+                break;
+            case self::TIPO_HABITACION_DOBLE:
+                $dato = $this->orm
+                    ->for_table('habdoble')
+                    ->where('tipoAlojamiento', $tipoAlojamiento)
+                    ->findOne()
+                ;
+                break;
+            case self::TIPO_HABITACION_TRIPLE:
+                $dato = $this->orm
+                    ->for_table('habtriple')
+                    ->where('tipoAlojamiento', $tipoAlojamiento)
+                    ->findOne()
+                ;
+                break;
+        }
     }
 }

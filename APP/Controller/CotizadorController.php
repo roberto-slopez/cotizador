@@ -57,9 +57,9 @@ class CotizadorController implements ControllerProviderInterface
         );
         $factory->post('/tipoAlojamiento', 'APP\Controller\CotizadorController::getTipoAlojamiento');
         $factory->post('/tipoHabitacion', 'APP\Controller\CotizadorController::getTipoHabitacion');
-        $factory->post('/tipoAlimentacion', 'APP\Controller\CotizadorController::getTipoAlimentacion');
+        $factory->post('/tipoAlimentacion/{tipoHabitacion}/{tipoAlojamiento}/{centro}', 'APP\Controller\CotizadorController::getTipoAlimentacion');
         $factory->post(
-            '/cotizacion/{curso}/{pais}/{semanas}/{lecciones}/{jornadas}/{moneda}/{cuidad}/{centro}/{alojamiento}/{semanasAlojamiento}/{tipoAlojamiento}/{tipoHabitacion}/{tipoAlimentacion}/{traslado}/{seguro}',
+            '/cotizacion/{curso}/{pais}/{semanas}/{lecciones}/{jornadas}/{moneda}/{cuidad}/{centro}/{alojamiento}/{semanasAlojamiento}/{tipoAlojamiento}/{tipoHabitacion}/{tipoAlimentacion}/{traslado}',
             'APP\Controller\CotizadorController::getCotizacion'
         );
 
@@ -185,11 +185,14 @@ class CotizadorController implements ControllerProviderInterface
 
     /**
      * @param Application $app
+     * @param $tipoHabitacion
+     * @param $tipoAlojamiento
+     * @param $centro
      * @return JsonResponse
      */
-    public function getTipoAlimentacion(Application $app)
+    public function getTipoAlimentacion(Application $app, $tipoHabitacion, $tipoAlojamiento, $centro)
     {
-        return new JsonResponse($app['cotizacion.repository']->getDatosTipoAlimentacion());
+        return new JsonResponse($app['cotizacion.repository']->getDatosTipoAlimentacion($tipoHabitacion, $tipoAlojamiento, $centro));
     }
 
     /**
@@ -210,7 +213,6 @@ class CotizadorController implements ControllerProviderInterface
      * @param $tipoHabitacion
      * @param $tipoAlimentacion
      * @param $traslado
-     * @param $seguro
      * @return JsonResponse
      */
     public function getCotizacion(
@@ -228,11 +230,10 @@ class CotizadorController implements ControllerProviderInterface
         $tipoAlojamiento,
         $tipoHabitacion,
         $tipoAlimentacion,
-        $traslado,
-        $seguro
+        $traslado
     ) {
         return new JsonResponse(
-            $app['cotizacion.repository']->getDatosTipoAlojamiento(
+            $app['cotizacion.repository']->getResultCalculo(
                 $curso,
                 $pais,
                 $semanas,
@@ -246,8 +247,7 @@ class CotizadorController implements ControllerProviderInterface
                 $tipoAlojamiento,
                 $tipoHabitacion,
                 $tipoAlimentacion,
-                $traslado,
-                $seguro
+                $traslado
             )
         );
     }
