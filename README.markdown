@@ -9,11 +9,8 @@
 Cotizador anterior: http://consejeriaestudiosenelexterior.com/bk-cb/cotizacion/cotizador-cb-2015.php
 
 ## Avance. 
-- Se agrego forms de symfony2 para manejar los selects
-- Se agregaron los dato iniciales al select curso.
-- Hidratar pais
-- Hidratar ciudad
-- Hidratar centro
-- Hidratar semanas
+- Primera sección completa (sin verificación)
+- Segunda sección completa (sin verificación)
+- Tercera sección completa (sin verificación)
 
 <b>Ejecutar en la consola o termina (solo modo desarrollo): php -S localhost:8080 -t web web/index.php</b>
