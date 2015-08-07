@@ -402,6 +402,12 @@ class CotizacionRepository
             ->findOne()
         ;
 
+        $moneda = $this->orm
+            ->for_table('moneda')
+            ->where('sigla', $moneda)
+            ->findOne()
+        ;
+
         $elementos = [];
         $elementos['CURSO'] = $dato->valorCurso;
         $elementos['REGISTRO'] = $dato->valorInscripcion;
@@ -409,10 +415,10 @@ class CotizacionRepository
         $elementos['TRASLADO'] = $dato->traslado;
         $elementos['FINANCIEROS'] = $dato->gastosEnvio;
         $elementos['VISA'] = $dato->derechosVisa;
-        $elementos['ESTADIA'] = 0;
+        $elementos['ESTADIA'] = $tipoAlimentacion;
         $elementos['ASISTENCIA'] = 0;
         //TOTAL(badge) = CURSO + REGISTRO + MATERIALES + ESTADIA + TRASLADO + FINANCIEROS + VISA (tipoMoneda)
-        $elementos['TOTAL'] = round(
+        $total = round(
             $elementos['CURSO'] +
             $elementos['REGISTRO'] +
             $elementos['MATERIALES'] +
@@ -424,36 +430,48 @@ class CotizacionRepository
             2
         );
 
+        $totalConvertido = $moneda ? $total * $moneda->valorRespectoDolar :$total;
+        $sigla = $moneda ? $moneda->sigla : 'dolar';
+
+        $elementos['TOTAL'] =sprintf('%s %s',$this->getSimboloMoneda($sigla),$totalConvertido);
+
         return $elementos;
     }
 
     /**
-     * @param $tipoHabitacion
-     * @param $tipoAlojamiento
+     * @param $sigla
+     * @return string
      */
-    public function getPrecioTipoHabitacion($tipoHabitacion, $tipoAlojamiento, $tipoAlimentacion)
+    public function getSimboloMoneda($sigla)
     {
-        switch ($tipoHabitacion) {
-            case self::TIPO_HABITACION_SENCILLA:
-                $dato = $this->orm
-                    ->for_table('habindividual')
-                    ->where('tipoAlojamiento', $tipoAlojamiento)
-                    ->findOne()
-                ;
+        switch ($sigla) {
+            case 'l':
+                //'li2bra';
+                return '£';
                 break;
-            case self::TIPO_HABITACION_DOBLE:
-                $dato = $this->orm
-                    ->for_table('habdoble')
-                    ->where('tipoAlojamiento', $tipoAlojamiento)
-                    ->findOne()
-                ;
+            case 'p':
+                //'Peso';
+                return 'COL$';
                 break;
-            case self::TIPO_HABITACION_TRIPLE:
-                $dato = $this->orm
-                    ->for_table('habtriple')
-                    ->where('tipoAlojamiento', $tipoAlojamiento)
-                    ->findOne()
-                ;
+            case 'e':
+                //'Euro';
+                return '€';
+                break;
+            case 'cad':
+                //'Dolar Canadiense'
+                return 'C$';
+                break;
+            case 'aud':
+                //'Dolar Australiano'
+                return 'A$';
+                break;
+            case 'nzd':
+                //'Dolar Neozelandes'
+                return 'NZ$';
+                break;
+            default:
+                // Dolas Estado Unidense.
+                return '$';
                 break;
         }
     }
