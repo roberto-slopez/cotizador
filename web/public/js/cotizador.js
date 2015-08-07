@@ -230,8 +230,8 @@ $(function () {
             $('#TRASLADO').html(datos['TRASLADO']);
             $('#FINANCIEROS').html(datos['FINANCIEROS']);
             $('#VISA').html(datos['VISA']);
-            $('#TOTAL').html(datos['']);
-            $('#ASISTENCIA').html(datos['']);
+            $('#TOTAL').html(datos['TOTAL']);
+            $('#ASISTENCIA').html(datos['ASISTENCIA']);
         }, "html");
     }
 

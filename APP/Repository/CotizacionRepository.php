@@ -342,7 +342,7 @@ class CotizacionRepository
      * @param $pais
      * @param $semanas
      * @param $lecciones
-     * @param $jornadas
+     * @param $jornadas (ampm or am or pm)
      * @param $moneda
      * @param $cuidad
      * @param $centro
@@ -371,9 +371,6 @@ class CotizacionRepository
         $traslado = false
     )
     {
-        /**
-        TOTAL(badge) = CURSO + REGISTRO + MATERIALES + ESTADIA + TRASLADO + FINANCIEROS + VISA (tipoMoneda)
-         */
         $datoCurso= $this->orm
             ->for_table('curso')
             ->select('nombre')
@@ -387,16 +384,11 @@ class CotizacionRepository
             ->where('idCurso', $semanas)
             ->findOne()
         ;
+
         $leccionesSemana = $this->orm
             ->for_table('curso')
             ->select('leccionesSemana')
             ->where('idCurso', $lecciones)
-            ->findOne()
-        ;
-        $jornada = $this->orm
-            ->for_table('curso')
-            ->select('jornadaLecciones')
-            ->where('idCurso', $jornadas)
             ->findOne()
         ;
 
@@ -406,7 +398,7 @@ class CotizacionRepository
             ->where('idPais', $pais)
             ->where('semanasCurso', $semanasCurso->semanasCurso)
             ->where('leccionesSemana', $leccionesSemana->leccionesSemana)
-            ->where('jornadaLecciones', $jornada->jornadaLecciones)
+            ->where('jornadaLecciones', $jornadas)
             ->findOne()
         ;
 
@@ -418,6 +410,19 @@ class CotizacionRepository
         $elementos['FINANCIEROS'] = $dato->gastosEnvio;
         $elementos['VISA'] = $dato->derechosVisa;
         $elementos['ESTADIA'] = 0;
+        $elementos['ASISTENCIA'] = 0;
+        //TOTAL(badge) = CURSO + REGISTRO + MATERIALES + ESTADIA + TRASLADO + FINANCIEROS + VISA (tipoMoneda)
+        $elementos['TOTAL'] = round(
+            $elementos['CURSO'] +
+            $elementos['REGISTRO'] +
+            $elementos['MATERIALES'] +
+            $elementos['TRASLADO'] +
+            $elementos['FINANCIEROS'] +
+            $elementos['VISA'] +
+            $elementos['ESTADIA'] +
+            $elementos['ASISTENCIA'],
+            2
+        );
 
         return $elementos;
     }
