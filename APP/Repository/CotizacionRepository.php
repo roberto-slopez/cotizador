@@ -481,7 +481,7 @@ class CotizacionRepository
         $totalConvertido = $moneda ? $total * $moneda->valorRespectoDolar :$total;
         $sigla = $moneda ? $moneda->sigla : 'dolar';
 
-        $elementos['TOTAL'] =sprintf('%s %s',$this->getSimboloMoneda($sigla),$totalConvertido);
+        $elementos['TOTAL'] = sprintf('%s %s', $this->getSimboloMoneda($sigla), number_format($totalConvertido, 2));
 
         // TODO: no mejorar
         $peso = 0;
@@ -509,16 +509,18 @@ class CotizacionRepository
             'TOTAL_PESOS' => round($total * $peso, 2),
         ];
 
-        $pais = $this->orm->for_table('pais')->select('nombre')->where('idPais', $pais)->findOne();
-        $ciudad = $this->orm->for_table('ciudad')->select('nombre')->where('idCiudad', $cuidad)->findOne();
+        $elementos['TOTAL_PESOS'] = sprintf('%s %s', 'COL$', number_format(round($total * $peso, 2), 2));
+
+        $pais = $this->orm->for_table('pais')->select_many('nombre','idPais')->where('idPais', $pais)->findOne();
+        $ciudad = $this->orm->for_table('ciudad')->select_many('nombre','idCiudad')->where('idCiudad', $cuidad)->findOne();
         $centro = $this->orm
             ->for_table('centroeducativo')
-            ->select('nombre')
+            ->select_many('nombre','idCentroEducativo')
             ->where('idCentroEducativo', $centro)
             ->findOne()
         ;
 
-        $tipoAlojamientoResult = '--';
+        $tipoAlojamientoResult = 0;
         if ($alojamiento) {
             $tipoAlojamientoQ  = $this->orm
                 ->for_table('tipoalojamiento')
@@ -531,6 +533,11 @@ class CotizacionRepository
         }
 
         $datos['INFO'] = [
+            'ID_PAIS' => $pais->idPais,
+            'ID_CIUDAD' => $ciudad->idCiudad,
+            'ID_CENTRO' => $centro->idCentroEducativo,
+            'ID_ALOJAMIENTO' => $tipoAlojamiento,
+            'SIGLA_MONEDA'=> (bool) $monedaSigla? $monedaSigla: 'd',
             'TIPO_MONEDA' => $moneda ? $moneda->nombreMoneda : 'Dolar',
             'CURSO' => $datoCurso->nombre,
             'PAIS' => $pais->nombre,
@@ -539,11 +546,11 @@ class CotizacionRepository
             'SEMANAS_CURSO' => $semanasCurso->semanasCurso,
             'LECCIONES_SEMANA' => $leccionesSemana->leccionesSemana,
             'JORNADA_LECCIONES' => $jornadas,
-            'ALOJAMIENTO' => $alojamiento ? $alojamiento : '--',
-            'SEMANA_ALOJAMIENTO' => $semanasAlojamiento ? $semanasAlojamiento:'--',
+            'ALOJAMIENTO' => $alojamiento ? $alojamiento : 'NO',
+            'SEMANA_ALOJAMIENTO' => $semanasAlojamiento ? $semanasAlojamiento:0,
             'TIPO_ALOJAMIENTO' => $tipoAlojamientoResult,
-            'TIPO_HABITACION' => isset($this->tipoHabitacion[$tipoHabitacion]) ? $this->tipoHabitacion[$tipoHabitacion] : '--',
-            'TIPO_TRASLADO' => (bool) $traslado ? $traslado : '--',
+            'TIPO_HABITACION' => isset($this->tipoHabitacion[$tipoHabitacion]) ? $this->tipoHabitacion[$tipoHabitacion] : 0,
+            'TRASLADO' => (bool) $traslado ? $traslado : 'NO',
         ];
 
         $this->session->set('TSdatosCotizacion', null);
@@ -590,6 +597,9 @@ class CotizacionRepository
         }
     }
 
+    /**
+     * @return string
+     */
     public function getFechaString()
     {
         $dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
@@ -609,5 +619,48 @@ class CotizacionRepository
         ];
 
         return $dias[date('w')]." ".date('d')." de ".$meses[date('n') - 1]." del ".date('Y');
+    }
+
+    /**
+     * @return null
+     */
+    public function saveCotizacion()
+    {
+        $datos = $this->session->get('TSdatosCotizacion');
+        $cotizacion = $this->orm->for_table('cotizaciones')->create();
+        $today = new \DateTime('today');
+        $cotizacion->set(
+            [
+                'fecha' => $today->format('Y-m-d'),
+                'curso' => $datos['INFO']['CURSO'],
+                'pais' => $datos['INFO']['ID_PAIS'],
+                'ciudad' => $datos['INFO']['ID_CIUDAD'],
+                'centro' => $datos['INFO']['ID_CENTRO'],
+                'semanascurso' => $datos['INFO']['SEMANAS_CURSO'],
+                'leccionessemana' => $datos['INFO']['LECCIONES_SEMANA'],
+                'jornadalecciones' => $datos['INFO']['JORNADA_LECCIONES'],
+                'alojamiento' => $datos['INFO']['ALOJAMIENTO'],
+                'semanas_alojamiento' => $datos['INFO']['SEMANA_ALOJAMIENTO'],
+                'tipo_alojamiento' => $datos['INFO']['ID_ALOJAMIENTO'],
+                'tipo_alimentacion' => $this->session->get('TSTipoAlimentacion'),
+                'traslado' => $datos['INFO']['TRASLADO'],
+                'seguro' => 'NO',
+                'pasaje' => 'NO',
+                'tipo_moneda' => $datos['INFO']['SIGLA_MONEDA'],
+                'valor_curso' => $datos['BADGE']['CURSO'] + $datos['BADGE']['MATERIALES'],
+                'valor_inscripcion' => $datos['BADGE']['REGISTRO'],
+                'valor_alojamiento' => $datos['BADGE']['ESTADIA'],
+                'valor_traslado' => $datos['BADGE']['TRASLADO'],
+                'valor_envio' => $datos['BADGE']['FINANCIEROS'],
+                'valor_seguro' => 0,
+                'valor_visa' => $datos['BADGE']['VISA'],
+                'valor_total' => $datos['BADGE']['TOTAL'],
+                'valor_total_pesos' => $datos['BADGE']['TOTAL_PESOS'],
+                'obervaciones' => '',
+            ]
+        );
+        $cotizacion->save();
+
+        return $cotizacion->id();
     }
 }

@@ -289,13 +289,15 @@ class CotizadorController implements ControllerProviderInterface
     {
         $sessionAlimentacion = $app['session']->get('TSTipoAlimentacion');
         $tipoAlimentacion = $sessionAlimentacion ? $sessionAlimentacion : '--';
+        $idNewCotizacion = $app['cotizacion.repository']->saveCotizacion();
 
         return $app['twig']->render(
             'recibo.twig',
             [
                 'datos' => $app['session']->get('TSdatosCotizacion'),
                 'fecha' => $app['cotizacion.repository']->getFechaString(),
-                'tipoAlimentacion' => $tipoAlimentacion
+                'tipoAlimentacion' => $tipoAlimentacion,
+                'numeroCotizacion' => $idNewCotizacion
             ]
         );
     }

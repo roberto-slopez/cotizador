@@ -84,6 +84,12 @@ $(function () {
             $selectTipoAlojamiento.prop('disabled', false);
             $selectTipoHabitacion.prop('disabled', false);
             $selectAlimentacion.prop('disabled', false);
+
+            $selectTipoHabitacion.empty();
+            $selectTipoHabitacion.append('<option value="">[ Seleccione ]</option>');
+
+            $selectTipoAlojamiento.empty();
+            $selectTipoAlojamiento.append('<option value="">[ Seleccione ]</option>');
             hidrateSelectsForAlojamiento();
         } else if ($selectAlojamiento.val() == 'NO')
         {
@@ -92,9 +98,12 @@ $(function () {
             $selectTipoHabitacion.prop('disabled', true);
             $selectAlimentacion.prop('disabled', true);
         }
+        getValuesBadges();
     });
 
     $selectTipoHabitacion.on('change', function (event) {
+        $selectAlimentacion.empty();
+        $selectAlimentacion.append('<option value="">[ Seleccione ]</option>');
         hidrateAlimentacion();
     });
 
@@ -286,6 +295,7 @@ $(function () {
             $('#VISA').html(datos['VISA']);
             $('#TOTAL').html(datos['TOTAL']);
             $('#ASISTENCIA').html(datos['ASISTENCIA']);
+            $('#PESOS').html(datos['TOTAL_PESOS']);
         }, "html");
     }
 

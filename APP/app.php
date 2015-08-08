@@ -21,6 +21,9 @@ $app->register(
             'connection_string' => 'mysql:host=localhost;dbname=cotizacion',
             'username' => 'root',
             'password' => '',
+            'id_column_overrides' => [
+                'cotizaciones' => 'cod'
+            ]
         ]
     ]
 );
