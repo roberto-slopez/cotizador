@@ -271,14 +271,14 @@ class CotizadorController implements ControllerProviderInterface
 
     /**
      * @param Application $app
-     * @param $tipoAlimentacion
+     * @param Request $request
      * @return Response
      */
-    public function saveTipoAlimentacion(Application $app, $tipoAlimentacion)
+    public function saveTipoAlimentacion(Application $app, Request $request)
     {
-        $app['session']->set('TSTipoAlimentacion', $tipoAlimentacion);
+        $app['session']->set('TSTipoAlimentacion', $request->get('tipoAlimentacion'));
 
-        return new Response(sprintf('done add %s', $tipoAlimentacion));
+        return new Response(sprintf('done add %s', $request->get('tipoAlimentacion')));
     }
 
     /**
@@ -287,11 +287,15 @@ class CotizadorController implements ControllerProviderInterface
      */
     public function printCotizacion(Application $app)
     {
+        $sessionAlimentacion = $app['session']->get('TSTipoAlimentacion');
+        $tipoAlimentacion = $sessionAlimentacion ? $sessionAlimentacion : '--';
+
         return $app['twig']->render(
             'recibo.twig',
             [
                 'datos' => $app['session']->get('TSdatosCotizacion'),
-                'fecha' => $app['cotizacion.repository']->getFechaString()
+                'fecha' => $app['cotizacion.repository']->getFechaString(),
+                'tipoAlimentacion' => $tipoAlimentacion
             ]
         );
     }

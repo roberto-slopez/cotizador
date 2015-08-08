@@ -530,9 +530,6 @@ class CotizacionRepository
             $tipoAlojamientoResult = $tipoAlojamientoQ->tipoHabitacion;
         }
 
-        $tipoAlimentacionText= isset($this->tipoAlmentacion[$this->session->get('TSTipoAlimentacion')]) ?
-            $this->tipoAlmentacion[$this->session->get('TSTipoAlimentacion')]: '--';
-
         $datos['INFO'] = [
             'TIPO_MONEDA' => $moneda ? $moneda->nombreMoneda : 'Dolar',
             'CURSO' => $datoCurso->nombre,
@@ -546,7 +543,6 @@ class CotizacionRepository
             'SEMANA_ALOJAMIENTO' => $semanasAlojamiento ? $semanasAlojamiento:'--',
             'TIPO_ALOJAMIENTO' => $tipoAlojamientoResult,
             'TIPO_HABITACION' => isset($this->tipoHabitacion[$tipoHabitacion]) ? $this->tipoHabitacion[$tipoHabitacion] : '--',
-            'TIPO_ALIMENTACION' => $tipoAlimentacionText,
             'TIPO_TRASLADO' => (bool) $traslado ? $traslado : '--',
         ];
 

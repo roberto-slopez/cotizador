@@ -111,6 +111,7 @@ $(function () {
     $selectAlimentacion.on('change', function (event)
     {
         getValuesBadges();
+        saveTipoAlimentacion();
     });
 
     $selectTraslado.on('change', function (event)
@@ -118,31 +119,10 @@ $(function () {
         getValuesBadges();
     });
 
-    $('#boton_imprimir').click(function() {
-        saveTipoAlimentacion();
-    });
-
     function saveTipoAlimentacion() {
         var textSelected = $selectAlimentacion.find(":selected").text();
-        alert(textSelected);
-        var idTextSelect = '0';
-        if (textSelected == 'No Aplica') {
-            idTextSelect = 1;
-        }
-        if (textSelected == 'Sin alimentación') {
-            idTextSelect = 2;
-        }
-        if (textSelected == 'Desayuno') {
-            idTextSelect = 3;
-        }
-        if (textSelected == 'Desayuno y cena') {
-            idTextSelect = 4;
-        }
-
-        alert(idTextSelect);
-        var url = '/saveTipoAlimentacion/' + idTextSelect;
-        $.post(url, function (value) {
-        }, "html");
+        var url = '/saveTipoAlimentacion';// + encodeURIComponent(textSelected);
+        $.post(url, {tipoAlimentacion: textSelected});
     }
 
     function setMonedaByPais() {
