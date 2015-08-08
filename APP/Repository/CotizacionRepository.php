@@ -9,6 +9,7 @@
 namespace APP\Repository;
 
 use Arseniew\Silex\Service\IdiormService;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Validator\Constraints\All;
 
 class CotizacionRepository
@@ -17,15 +18,41 @@ class CotizacionRepository
     const TIPO_HABITACION_DOBLE = 'habdoble';
     const TIPO_HABITACION_TRIPLE = 'habtriple';
 
-    //const TIPO_HABITACION_
     /**
      * @var IdiormService
      */
     private $orm;
 
-    function __construct(IdiormService $orm)
+    /**
+     * @var Session
+     */
+    private $session;
+
+    /**
+     * @var array
+     */
+    private $tipoHabitacion = [
+        self::TIPO_HABITACION_SENCILLA => 'Sencilla',
+        self::TIPO_HABITACION_DOBLE => 'Doble',
+        self::TIPO_HABITACION_TRIPLE => 'Triple',
+    ];
+
+    private $tipoAlmentacion = [
+        1 => 'No Aplica',
+        2 => 'Sin alimentación',
+        3 => 'Desayuno',
+        4 => 'Desayuno y cena',
+        5 => 'Derecho Cocina',
+    ];
+
+    /**
+     * @param IdiormService $orm
+     * @param Session $session
+     */
+    function __construct(IdiormService $orm, Session $session)
     {
         $this->orm = $orm;
+        $this->session = $session;
     }
 
     /**
@@ -85,14 +112,15 @@ class CotizacionRepository
     }
 
     /**
-     * @param $id
+     * @param $idCurso
+     * @param $idPais
      * @return array
      */
-    public function getDatosCiudad($id)
+    public function getDatosCiudad($idCurso, $idPais)
     {
         $curso = $this->orm
             ->for_table('curso')
-            ->where('idCurso', $id)
+            ->where('idCurso', $idCurso)
             ->findOne();
 
         $ciudades = $this->orm
@@ -102,9 +130,9 @@ class CotizacionRepository
             ->inner_join('centroeducativo', ['curso.idCentroEducativo', '=', 'centroeducativo.idCentroEducativo'])
             ->inner_join('ciudad', ['centroeducativo.idCiudad', '=', 'ciudad.idCiudad'])
             ->where('curso.nombre', $curso->nombre)
-            ->where('curso.idPais', $curso->idPais)
+            ->where('curso.idPais', $idPais)
             ->order_by_asc('ciudad.nombre')
-            ->findMany();
+            ->find_many();
 
         $elementos = [];
         foreach ($ciudades as $ciudad) {
@@ -230,7 +258,6 @@ class CotizacionRepository
      */
     public function getDatosJornadaLecciones($idCentro, $nombreCurso, $semanasCurso, $leccionesSemana)
     {
-        //$sql = "SELECT DISTINCT jornadaLecciones FROM curso WHERE idCentroEducativo = $centro AND nombre = '$curso' and semanasCurso=$semanas_curso and leccionesSemana= $leccionesSemana ORDER BY jornadaLecciones ASC";
         $curso = $this->orm
             ->for_table('curso')
             ->where('idCurso', $nombreCurso)
@@ -249,6 +276,12 @@ class CotizacionRepository
             ->findOne()
         ;
         $semanaLecciones = $curso->leccionesSemana;
+        //$sql = "SELECT DISTINCT jornadaLecciones FROM curso
+        // WHERE idCentroEducativo = $centro AND
+        // nombre = '$curso' and semanasCurso=$semanas_curso AND
+        // leccionesSemana= $leccionesSemana
+        // ORDER BY jornadaLecciones ASC";
+
         $datos = $this->orm
             ->for_table('curso')
             ->distinct()
@@ -300,7 +333,7 @@ class CotizacionRepository
     }
 
     /**
-     * @param $tipoHabitacion contiene el nombre de la tabla referente al tipo de habitación
+     * @param string $tipoHabitacion contiene el nombre de la tabla referente al tipo de habitación
      * @param $tipoAlojamiento
      * @param $centro
      * @return array
@@ -314,11 +347,18 @@ class CotizacionRepository
             ->where('tipoAlojamiento', $tipoAlojamiento)
             ->findOne()
         ;
+        $elementos = [];
 
         if (!$datos) {
-            $elementos [0]='No Aplica';
-        } elseif ($datos->sinComida == 0 && $datos->desayuno == 0 && $datos->mediaPension == 0 && $datos->completa == 0 && $datos->derechoCocina == 0){
-            $elementos [0]='No Aplica';
+            $elementos [0] = 'No Aplica';
+        } elseif (
+            $datos->sinComida == 0 &&
+            $datos->desayuno == 0 &&
+            $datos->mediaPension == 0 &&
+            $datos->completa == 0 &&
+            $datos->derechoCocina == 0
+        ) {
+            $elementos [0] = 'No Aplica';
         } else {
             if ($datos->sinComida != 0) {
                 $elementos[$datos->sinComida] = 'Sin alimentación';
@@ -342,16 +382,16 @@ class CotizacionRepository
      * @param $pais
      * @param $semanas
      * @param $lecciones
-     * @param $jornadas (ampm or am or pm)
-     * @param $moneda
+     * @param $jornadas
+     * @param $monedaSigla
      * @param $cuidad
      * @param $centro
-     * @param bool|false $alojamiento
+     * @param $alojamiento
      * @param $semanasAlojamiento
      * @param $tipoAlojamiento
      * @param $tipoHabitacion
      * @param $tipoAlimentacion
-     * @param bool|false $traslado
+     * @param $traslado
      * @return array
      */
     public function getResultCalculo(
@@ -360,15 +400,15 @@ class CotizacionRepository
         $semanas,
         $lecciones,
         $jornadas,
-        $moneda,
+        $monedaSigla,
         $cuidad,
         $centro,
-        $alojamiento = false,
+        $alojamiento,
         $semanasAlojamiento,
         $tipoAlojamiento,
         $tipoHabitacion,
         $tipoAlimentacion,
-        $traslado = false
+        $traslado
     )
     {
         $datoCurso= $this->orm
@@ -404,20 +444,28 @@ class CotizacionRepository
 
         $moneda = $this->orm
             ->for_table('moneda')
-            ->where('sigla', $moneda)
+            ->where('sigla', $monedaSigla)
             ->findOne()
         ;
+
+        $estadia  = 0;
+        // ver si es posible usar una constante
+        if ($alojamiento == 'SI') {
+            // se suma 1 por que al construir un array con range los indices inician en 0 TODO: mejorar
+            $numeroSemanas = $semanasAlojamiento != null ? (int)$semanasAlojamiento + 1 : 0;
+            $estadia = $numeroSemanas > 0 ? $tipoAlimentacion * $numeroSemanas :$tipoAlimentacion;
+        }
 
         $elementos = [];
         $elementos['CURSO'] = $dato->valorCurso;
         $elementos['REGISTRO'] = $dato->valorInscripcion;
         $elementos['MATERIALES'] = $dato->materiales;
-        $elementos['TRASLADO'] = $dato->traslado;
+        $elementos['TRASLADO'] = $traslado ? $dato->traslado : 0;
         $elementos['FINANCIEROS'] = $dato->gastosEnvio;
         $elementos['VISA'] = $dato->derechosVisa;
-        $elementos['ESTADIA'] = $tipoAlimentacion;
+        $elementos['ESTADIA'] = $estadia;
         $elementos['ASISTENCIA'] = 0;
-        //TOTAL(badge) = CURSO + REGISTRO + MATERIALES + ESTADIA + TRASLADO + FINANCIEROS + VISA (tipoMoneda)
+
         $total = round(
             $elementos['CURSO'] +
             $elementos['REGISTRO'] +
@@ -434,6 +482,76 @@ class CotizacionRepository
         $sigla = $moneda ? $moneda->sigla : 'dolar';
 
         $elementos['TOTAL'] =sprintf('%s %s',$this->getSimboloMoneda($sigla),$totalConvertido);
+
+        // TODO: no mejorar
+        $peso = 0;
+        if ($moneda != 'p') {
+            $monedaQuery = $this->orm
+                ->for_table('moneda')
+                ->where('sigla', 'p')
+                ->findOne()
+            ;
+
+            $peso = $monedaQuery->valorRespectoDolar;
+        }
+
+
+        $datos['BADGE'] = [
+            'CURSO' => round($elementos['CURSO'] * $moneda->valorRespectoDolar, 2),
+            'REGISTRO' => round($elementos['REGISTRO'] * $moneda->valorRespectoDolar, 2),
+            'MATERIALES' => round($elementos['MATERIALES'] * $moneda->valorRespectoDolar, 2),
+            'ESTADIA' => round($elementos['ESTADIA'] * $moneda->valorRespectoDolar, 2),
+            'TRASLADO' => round($elementos['TRASLADO'] * $moneda->valorRespectoDolar, 2),
+            'FINANCIEROS' => round($elementos['FINANCIEROS'] * $moneda->valorRespectoDolar, 2),
+            'ASISTENCIA' => round($elementos['ASISTENCIA'] * $moneda->valorRespectoDolar, 2),
+            'VISA' => round($elementos['VISA'] * $moneda->valorRespectoDolar, 2),
+            'TOTAL' => round($total * $moneda->valorRespectoDolar, 2),
+            'TOTAL_PESOS' => round($total * $peso, 2),
+        ];
+
+        $pais = $this->orm->for_table('pais')->select('nombre')->where('idPais', $pais)->findOne();
+        $ciudad = $this->orm->for_table('ciudad')->select('nombre')->where('idCiudad', $cuidad)->findOne();
+        $centro = $this->orm
+            ->for_table('centroeducativo')
+            ->select('nombre')
+            ->where('idCentroEducativo', $centro)
+            ->findOne()
+        ;
+
+        $tipoAlojamientoResult = '--';
+        if ($alojamiento) {
+            $tipoAlojamientoQ  = $this->orm
+                ->for_table('tipoalojamiento')
+                ->select('tipoHabitacion')
+                ->where('idTipoAlojamiento',$tipoAlojamiento)
+                ->findOne()
+            ;
+
+            $tipoAlojamientoResult = $tipoAlojamientoQ->tipoHabitacion;
+        }
+
+        $tipoAlimentacionText= isset($this->tipoAlmentacion[$this->session->get('TSTipoAlimentacion')]) ?
+            $this->tipoAlmentacion[$this->session->get('TSTipoAlimentacion')]: '--';
+
+        $datos['INFO'] = [
+            'TIPO_MONEDA' => $moneda ? $moneda->nombreMoneda : 'Dolar',
+            'CURSO' => $datoCurso->nombre,
+            'PAIS' => $pais->nombre,
+            'CIUDAD' => $ciudad->nombre,
+            'CENTRO' => $centro->nombre,
+            'SEMANAS_CURSO' => $semanasCurso->semanasCurso,
+            'LECCIONES_SEMANA' => $leccionesSemana->leccionesSemana,
+            'JORNADA_LECCIONES' => $jornadas,
+            'ALOJAMIENTO' => $alojamiento ? $alojamiento : '--',
+            'SEMANA_ALOJAMIENTO' => $semanasAlojamiento ? $semanasAlojamiento:'--',
+            'TIPO_ALOJAMIENTO' => $tipoAlojamientoResult,
+            'TIPO_HABITACION' => isset($this->tipoHabitacion[$tipoHabitacion]) ? $this->tipoHabitacion[$tipoHabitacion] : '--',
+            'TIPO_ALIMENTACION' => $tipoAlimentacionText,
+            'TIPO_TRASLADO' => (bool) $traslado ? $traslado : '--',
+        ];
+
+        $this->session->set('TSdatosCotizacion', null);
+        $this->session->set('TSdatosCotizacion', $datos);
 
         return $elementos;
     }
@@ -474,5 +592,26 @@ class CotizacionRepository
                 return '$';
                 break;
         }
+    }
+
+    public function getFechaString()
+    {
+        $dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+        $meses = [
+            "Enero",
+            "Febrero",
+            "Marzo",
+            "Abril",
+            "Mayo",
+            "Junio",
+            "Julio",
+            "Agosto",
+            "Septiembre",
+            "Octubre",
+            "Noviembre",
+            "Diciembre",
+        ];
+
+        return $dias[date('w')]." ".date('d')." de ".$meses[date('n') - 1]." del ".date('Y');
     }
 }

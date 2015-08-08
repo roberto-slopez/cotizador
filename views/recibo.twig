@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html;">
+    <link href="{{ asset('/public/css/style.css') }}" rel="stylesheet">
+</head>
+<body onload="window.print();">
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<table width="633" border="0" cellpadding="2" cellspacing="1" class="tabla_cotizador" align="center">
+    <tr class="titulo_tabla_cotizacion">
+        <td colspan="3" align="right">
+            <table width="100%" border="0" cellspacing="0" cellpadding="2">
+                <tr>
+                    <td colspan="2" align="left" valign="top" bgcolor="#FFFFFF">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td width="63%"><b>Cotizaci&oacute;n programa para estudios de:{{ datos.INFO.CURSO }} </b></td>
+                    <td width="37%">
+                        <div align="right">
+                            <b># NumeroCotización</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ fecha }}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td valign="top">
+            <table cellpadding="5">
+                <tr>
+                    <td width="111" align="left">Pais</td>
+                    <td id="div_pais" align="right">{{ datos.INFO.CURSO }}</td>
+                </tr>
+                <tr>
+                    <td align="left">Ciudad</td>
+                    <td id="div_ciudad" align="right">{{ datos.INFO.CIUDAD }}</td>
+                </tr>
+                <tr>
+                    <td align="left">Centro</td>
+                    <td id="div_centro" align="right">{{ datos.INFO.CENTRO }}</td>
+                </tr>
+                <tr>
+                    <td align="left">Semanas curso</td>
+                    <td id="div_semanasCurso" align="right">{{ datos.INFO.SEMANAS_CURSO }}</td>
+                </tr>
+                <tr>
+                    <td align="left">Lecciones por Semana</td>
+                    <td id="div_leccionesSemana" align="right">{{ datos.INFO.LECCIONES_SEMANA }}</td>
+                </tr>
+                <tr>
+                    <td align="left">Jornada lecciones</td>
+                    <td align="right" id="div_jornadaLecciones">{{ datos.INFO.JORNADA_LECCIONES }}</td>
+                </tr>
+            </table>
+        </td>
+        <td width="186" valign="top">
+            <table cellpadding="5">
+                <tr>
+                    <td width="111">Alojamiento</td>
+                    <td id="div_alojamiento" align="right">{{ datos.INFO.ALOJAMIENTO }}</td>
+                </tr>
+                <tr>
+                    <td>Semanas Alojamiento</td>
+                    <td id="div_semanas_alojamiento" align="right">{{ datos.INFO.SEMANA_ALOJAMIENTO }}</td>
+                </tr>
+                <tr>
+                    <td>Tipo Alojamiento</td>
+                    <td id="div_tipo_alojamiento" align="right">{{ datos.INFO.TIPO_ALOJAMIENTO }}</td>
+                </tr>
+                <tr>
+                    <td>Tipo Habitacion</td>
+                    <td id="div_tipo_habitacion" align="right">{{ datos.INFO.TIPO_HABITACION }}</td>
+                </tr>
+                <tr>
+                    <td>Tipo Alimentaci&oacute;n</td>
+                    <td id='div_tipo_alimentacion' align="right">{{ datos.INFO.TIPO_ALIMENTACION }}</td>
+                </tr>
+                <tr>
+                    <td>Traslado</td>
+                    <td id='div_traslado' align="right">{{ datos.INFO.TIPO_TRASLADO }}</td>
+                </tr>
+            </table>
+        </td>
+        <td width="1%" rowspan="2" valign="top" id="div_cotizacion">
+            <table width="200" border="0" cellpadding="1" cellspacing="1" bgcolor="#333333">
+                <tr>
+                    <td bgcolor="#FFFFFF">
+                        <table cellpadding="3" cellspacing="1" class="tabla_cotizacion" width="100%">
+                            <tr>
+                                <td align="center" colspan="2" class="titulo_tabla_cotizacion"><b>INVERSION</b></td>
+                            </tr>
+                            <tr>
+                                <td width="102"><b>Tipo Moneda</b></td>
+                                <td id='tipo_moneda' width="86" align="right">{{ datos.INFO.TIPO_MONEDA }}</td>
+                            </tr>
+                            <tr>
+                                <td>Curso</td>
+                                <td id='valor_curso' width="86" align="right">{{ datos.BADGE.CURSO }}</td>
+                            </tr>
+                            <tr>
+                                <td>Registro</td>
+                                <td id='valor_inscripcion' align="right">{{ datos.BADGE.REGISTRO }}</td>
+                            </tr>
+                            <tr>
+                                <td>Materiales</td>
+                                <td id='valor_materiales' align="right">{{ datos.BADGE.MATERIALES }}</td>
+                            </tr>
+                            <tr>
+                                <td>Estadia</td>
+                                <td id='valor_alojamiento' align="right">{{ datos.BADGE.ESTADIA }}</td>
+                            </tr>
+                            <tr>
+                                <td>Traslado</td>
+                                <td id='valor_traslado' align="right">{{ datos.BADGE.TRASLADO }}</td>
+                            </tr>
+                            <tr>
+                                <td>Financiero</td>
+                                <td id='valor_envio' align="right">{{ datos.BADGE.FINANCIEROS }}</td>
+                            </tr>
+                            <tr>
+                                <td>Derechos Visa</td>
+                                <td id='valor_visa' align="right">{{ datos.BADGE.VISA }}</td>
+                            </tr>
+                            <tr>
+                                <td height="1" colspan="2" bgcolor="#666666"></td>
+                            </tr>
+                            <tr>
+                                <td><b>TOTAL</b></td>
+                                <td id='total' align="right">{{ datos.BADGE.TOTAL }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="right" id='total_pesos'>{{ datos.BADGE.TOTAL_PESOS }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <tr valign="top">
+        <td colspan="2" align="center" bordercolor="#FF0000">
+            <div align="justify"><span class="Estilo3">
+     El valor del curso se maneja en la moneda a su correspondiente Pa&iacute;s, valor
+
+       sujetos a cambios sin previo aviso. Valores en otras monedas
+
+      son informativos. Pagos en pesos a la tasa CB
+
+      del dia de pago</span></div>
+            <br>
+            Validez de la presente cotizaci&oacute;n 7 d&iacute;as
+        </td>
+    </tr>
+    <tr valign="top">
+        <td align="center" colspan="3" bordercolor="#FF0000">
+            <blockquote>
+                <div align="right"><strong><font size="4">&copy;
+                        </font></strong><font size="1">Consejer&iacute;a
+                        Britanica Ltda.<br>
+                        Derechos de autor 2005-2011</font></div>
+            </blockquote>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use mPDF;
 
 /**
  * Class CotizadorController
@@ -43,7 +44,7 @@ class CotizadorController implements ControllerProviderInterface
         // Primer segmento
         $factory->get('/', 'APP\Controller\CotizadorController::index');
         $factory->post('/pais/{id}', 'APP\Controller\CotizadorController::getPais');
-        $factory->post('/ciudad/{id}', 'APP\Controller\CotizadorController::getCiudad');
+        $factory->post('/ciudad/{idCurso}/{idPais}', 'APP\Controller\CotizadorController::getCiudad');
         $factory->post('/centro/{id}', 'APP\Controller\CotizadorController::getCentroEducativo');
         $factory->post('/moneda/{id}', 'APP\Controller\CotizadorController::getMoneda');
         $factory->post('/semana/{idCentro}/{nombreCurso}', 'APP\Controller\CotizadorController::getSemanasCurso');
@@ -61,7 +62,17 @@ class CotizadorController implements ControllerProviderInterface
         $factory->post(
             '/cotizacion/{curso}/{pais}/{semanas}/{lecciones}/{jornadas}/{moneda}/{cuidad}/{centro}/{alojamiento}/{semanasAlojamiento}/{tipoAlojamiento}/{tipoHabitacion}/{tipoAlimentacion}/{traslado}',
             'APP\Controller\CotizadorController::getCotizacion'
-        );
+        )
+            ->value('alojamiento', false)
+            ->value('semanasAlojamiento', false)
+            ->value('tipoAlojamiento', false)
+            ->value('tipoHabitacion', false)
+            ->value('tipoAlimentacion', false)
+            ->value('traslado', false)
+        ;
+
+        $factory->get('/printCotizacion', 'APP\Controller\CotizadorController::printCotizacion')->bind('print');
+        $factory->post('/saveTipoAlimentacion', 'APP\Controller\CotizadorController::saveTipoAlimentacion');
 
         return $factory;
     }
@@ -76,6 +87,9 @@ class CotizadorController implements ControllerProviderInterface
         $form = $app['form.factory']
             ->create(new CotizacionType($app['cotizacion.repository']->getDatosIniciales()), [])
         ;
+
+        $app['session']->set('TSTipoAlimentacion', null);
+        $app['session']->set('TSdatosCotizacion', null);
 
         return $app['twig']->render('index.twig', ['form' => $form->createView()]);
     }
@@ -92,12 +106,13 @@ class CotizadorController implements ControllerProviderInterface
 
     /**
      * @param Application $app
-     * @param $id
+     * @param $idCurso
+     * @param $idPais
      * @return JsonResponse
      */
-     public function getCiudad(Application $app, $id)
+     public function getCiudad(Application $app, $idCurso, $idPais)
     {
-        return new JsonResponse($app['cotizacion.repository']->getDatosCiudad($id));
+        return new JsonResponse($app['cotizacion.repository']->getDatosCiudad($idCurso, $idPais));
     }
 
     /**
@@ -192,7 +207,9 @@ class CotizadorController implements ControllerProviderInterface
      */
     public function getTipoAlimentacion(Application $app, $tipoHabitacion, $tipoAlojamiento, $centro)
     {
-        return new JsonResponse($app['cotizacion.repository']->getDatosTipoAlimentacion($tipoHabitacion, $tipoAlojamiento, $centro));
+        return new JsonResponse(
+            $app['cotizacion.repository']->getDatosTipoAlimentacion($tipoHabitacion, $tipoAlojamiento, $centro)
+        );
     }
 
     /**
@@ -249,6 +266,33 @@ class CotizadorController implements ControllerProviderInterface
                 $tipoAlimentacion,
                 $traslado
             )
+        );
+    }
+
+    /**
+     * @param Application $app
+     * @param $tipoAlimentacion
+     * @return Response
+     */
+    public function saveTipoAlimentacion(Application $app, $tipoAlimentacion)
+    {
+        $app['session']->set('TSTipoAlimentacion', $tipoAlimentacion);
+
+        return new Response(sprintf('done add %s', $tipoAlimentacion));
+    }
+
+    /**
+     * @param Application $app
+     * @return string
+     */
+    public function printCotizacion(Application $app)
+    {
+        return $app['twig']->render(
+            'recibo.twig',
+            [
+                'datos' => $app['session']->get('TSdatosCotizacion'),
+                'fecha' => $app['cotizacion.repository']->getFechaString()
+            ]
         );
     }
 }

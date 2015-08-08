@@ -17,7 +17,8 @@
     "symfony/validator": "~2.6",
     "symfony/config": "~2.6",
     "symfony/translation": "~2.6",
-    "arseniew/silex-idiorm-provider": "~1.1"
+    "arseniew/silex-idiorm-provider": "~1.1",
+    "mpdf/mpdf": "^6.0"
   },
   "require-dev": {
     "symfony/var-dumper": "dev-master"

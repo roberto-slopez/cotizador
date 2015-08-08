@@ -1,0 +1,150 @@
+td {
+    margin: 0px;
+    font-family: Arial;
+    font-size: 12px;
+}
+
+a {
+    color: none;
+    text-decoration: none;
+}
+
+a:visited {
+    color: none;
+    text-decoration: none;
+}
+
+a:hover {
+    color: none;
+    text-decoration: none;
+}
+
+.select {
+    font-family: Arial;
+    font-size: 10px;
+    border: 1px solid #C6C6C6;
+    width: 150px;
+    height: 18px;
+    padding-left: 2px;
+}
+
+.select_w {
+    font-family: Arial;
+    font-size: 10px;
+    border: 1px solid #C6C6C6;
+    padding-left: 2px;
+    width: 130px;
+    height: 18px;
+}
+
+.select_i {
+    font-family: Arial;
+    font-size: 10px;
+    border: 1px solid #C6C6C6;
+    padding-left: 2px;
+    width: 120px;
+    height: 18px;
+}
+
+.input_text_cotizador {
+    font-family: Arial;
+    font-size: 10px;
+    border: 1px solid #FBFBFB;
+    text-align: right;
+    background-color: #FBFBFB;
+}
+
+.input_text_cotizadorD {
+    color: #FFF;
+    font-family: Arial;
+    font-size: 10px;
+    border: 1px solid #FBFBFB;
+    text-align: right;
+    background-color: #FBFBFB;
+}
+
+.input_text_cotizadorC {
+    color: #F00;
+    font-family: Arial;
+    font-size: 10px;
+    border: 1px solid #FBFBFB;
+    text-align: right;
+    background-color: #FBFBFB;
+}
+
+.tabla_cotizador {
+    border-left: 3px solid #E6EAF0;
+    border-bottom: 3px solid #E6EAF0;
+    border-top: 1px solid #E6EAF0;
+    border-right: 1px solid #E6EAF0;
+}
+
+.tabla_cotizador td {
+    font-size: 11px;
+}
+
+.titulo_cotizador {
+    background-color: #E6EAF0;
+    font-size: 16px;
+    color: #376797;
+}
+
+.tabla_cotizacion {
+    background-color: #FBFBFB;
+    border-top: 1px solid #E6EAF0;
+    border-left: 1px solid #E6EAF0;
+    border-bottom: 1px solid #E6EAF0;
+    padding: 3px;
+}
+
+.titulo_tabla_cotizacion {
+    font-size: 12px;
+    background-color: #FAFAFA;
+}
+
+.division_cotizador {
+    background-color: #E6EAF0;
+}
+
+.div_info {
+    position: absolute;
+    visibility: hidden;
+    top: 490px;
+    background-color: #FBFBFB;
+    border: 1px solid #E6EAF0;
+    height: 350px;
+    width: 227px;
+    padding: 0px;
+}
+
+.titulo_div_info {
+    background-color: #E6EAF0;
+    font-size: 12px;
+}
+
+/*.ast a,a:visited{
+
+	color: #FFFFFF;
+
+}*/
+.pie {
+    position: fixed;
+    z-index: 10;
+    bottom: 0px;
+    left: 15px;
+    right: 15px;
+}
+.login {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9px;
+    color: #666;
+    height: 13px;
+    width: 60px;
+}
+
+.textos_azules {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #006;
+}

@@ -1,5 +1,3 @@
-/*$( window ).load(function() {
- });*/
 $(function () {
 
     //Select (los nombres siempre son form_(el select) ver CotizadorController:105 para los nombres de los selects)
@@ -30,12 +28,16 @@ $(function () {
     $selectCurso.on('change', function (event) {
         if ($selectCurso.val() != '[ Seleccione ]') {
             $selectPais.attr('disabled', false);
-            $('#list_valores').slideToggle('slow');
-            $('#boton_imprimir').slideToggle('slow');
-            $('#paso_2').slideToggle('slow');
-            $('#paso_3').slideToggle('slow');
-        } else {
+            $('#list_valores').show('slow');
+            $('#boton_imprimir').show('slow');
+            $('#paso_2').show('slow');
+            $('#paso_3').show('slow');
+        } else if($selectCurso.val() == '[ Seleccione ]'){
             $selectPais.attr('disabled', true);
+            $('#list_valores').hide();
+            $('#boton_imprimir').hide();
+            $('#paso_2').hide();
+            $('#paso_3').hide();
         }
 
         $selectPais.empty();
@@ -78,19 +80,70 @@ $(function () {
 
     $selectAlojamiento.on('change', function (event) {
         if ($selectAlojamiento.val() == 'SI') {
-            hidrateSelectsForAlojamiento()
+            $selectSemanaAlojamiento.prop('disabled', false);
+            $selectTipoAlojamiento.prop('disabled', false);
+            $selectTipoHabitacion.prop('disabled', false);
+            $selectAlimentacion.prop('disabled', false);
+            hidrateSelectsForAlojamiento();
+        } else if ($selectAlojamiento.val() == 'NO')
+        {
+            $selectSemanaAlojamiento.prop('disabled', true);
+            $selectTipoAlojamiento.prop('disabled', true);
+            $selectTipoHabitacion.prop('disabled', true);
+            $selectAlimentacion.prop('disabled', true);
         }
     });
 
     $selectTipoHabitacion.on('change', function (event) {
-        if ($selectAlojamiento.val() == 'SI') {
-            hidrateAlimentacion()
-        }
+        hidrateAlimentacion();
     });
 
-    $buttonCalcular.click(function () {
+    $selectJornadaLecciones.on('change', function (event)
+    {
         getValuesBadges();
     });
+
+    $selectMoneda.on('change', function (event)
+    {
+        getValuesBadges();
+    });
+
+    $selectAlimentacion.on('change', function (event)
+    {
+        getValuesBadges();
+    });
+
+    $selectTraslado.on('change', function (event)
+    {
+        getValuesBadges();
+    });
+
+    $('#boton_imprimir').click(function() {
+        saveTipoAlimentacion();
+    });
+
+    function saveTipoAlimentacion() {
+        var textSelected = $selectAlimentacion.find(":selected").text();
+        alert(textSelected);
+        var idTextSelect = '0';
+        if (textSelected == 'No Aplica') {
+            idTextSelect = 1;
+        }
+        if (textSelected == 'Sin alimentación') {
+            idTextSelect = 2;
+        }
+        if (textSelected == 'Desayuno') {
+            idTextSelect = 3;
+        }
+        if (textSelected == 'Desayuno y cena') {
+            idTextSelect = 4;
+        }
+
+        alert(idTextSelect);
+        var url = '/saveTipoAlimentacion/' + idTextSelect;
+        $.post(url, function (value) {
+        }, "html");
+    }
 
     function setMonedaByPais() {
         var url = '/moneda/' + $selectPais.val();
@@ -113,7 +166,7 @@ $(function () {
 
     //Agregar datos al select Ciudad
     function hidrateCiudades() {
-        var url = '/ciudad/' + $selectCurso.val();
+        var url = '/ciudad/' + $selectCurso.val()+'/'+$selectPais.val();
         $.post(url, function (data) {
             var ciudades = $.parseJSON(data);
             $.each(ciudades, function (key, value) {
@@ -204,6 +257,26 @@ $(function () {
     }
 
     function getValuesBadges() {
+        if ($selectAlojamiento.val() == 'SI'){
+            var alojamiento = $selectAlojamiento.val();
+            var semanasAlojamiento = $selectSemanaAlojamiento.val();
+            var tipoAlojamiento = $selectTipoAlojamiento.val();
+            var tipoHabitacion = $selectTipoHabitacion.val();
+            var tipoAlimentacion = $selectAlimentacion.val();
+        } else {
+            var alojamiento = 0;
+            var semanasAlojamiento = 0;
+            var tipoAlojamiento = 0;
+            var tipoHabitacion = 0;
+            var tipoAlimentacion = 0;
+        }
+
+        if ($selectTraslado.val() == 'SI') {
+            var traslado = $selectTraslado.val();
+        } else {
+            var traslado = 0;
+        }
+
         var url =
             '/cotizacion/' +
             $selectCurso.val() + '/' +
@@ -214,13 +287,14 @@ $(function () {
             $selectMoneda.val() + '/' +
             $selectCiudad.val() + '/' +
             $selectCentro.val() + '/' +
-            $selectAlojamiento.val() + '/' +
-            $selectSemanaAlojamiento.val() + '/' +
-            $selectTipoAlojamiento.val() + '/' +
-            $selectTipoHabitacion.val() + '/' +
-            $selectAlimentacion.val() + '/' +
-            $selectTraslado.val()
+            alojamiento + '/' +
+            semanasAlojamiento + '/' +
+            tipoAlojamiento + '/' +
+            tipoHabitacion + '/' +
+            tipoAlimentacion + '/' +
+            traslado
         ;
+
         $.post(url, function (data) {
             var datos = $.parseJSON(data);
             $('#CURSO').html(datos['CURSO']);

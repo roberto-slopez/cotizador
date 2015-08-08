@@ -20,7 +20,7 @@ $app->register(
         'idiorm.db.options' => [
             'connection_string' => 'mysql:host=localhost;dbname=cotizacion',
             'username' => 'root',
-            'password' => '1234',
+            'password' => '',
         ]
     ]
 );
@@ -33,7 +33,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), [
 $app['twig']->addExtension(new \Entea\Twig\Extension\AssetExtension($app));
 
 $app['cotizacion.repository'] = $app->share(function() use ($app) {
-    return new \APP\Repository\CotizacionRepository($app['idiorm.db']);
+    return new \APP\Repository\CotizacionRepository($app['idiorm.db'], $app['session']);
 });
 
 $app->mount('/', new APP\Controller\CotizadorController());
