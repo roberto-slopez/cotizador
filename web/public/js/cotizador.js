@@ -158,7 +158,9 @@ $(function () {
         var url = '/ciudad/' + $selectCurso.val()+'/'+$selectPais.val();
         $.post(url, function (data) {
             var ciudades = $.parseJSON(data);
+
             $.each(ciudades, function (key, value) {
+                console.log(value);
                 $selectCiudad.append('<option value=' + key + '>' + value + '</option>');
             });
 
@@ -167,7 +169,7 @@ $(function () {
 
     //Agregar datos al select Centro
     function hidrateCentros() {
-        var url = '/centro/' + $selectCiudad.val();
+        var url = '/centro/' + $selectCurso.val() + '/' + $selectPais.val() + '/' + $selectCiudad.val();
         $.post(url, function (data) {
             var ciudades = $.parseJSON(data);
             $.each(ciudades, function (key, value) {

@@ -121,7 +121,8 @@ class CotizacionRepository
         $curso = $this->orm
             ->for_table('curso')
             ->where('idCurso', $idCurso)
-            ->findOne();
+            ->findOne()
+        ;
 
         $ciudades = $this->orm
             ->for_table('curso')
@@ -132,11 +133,13 @@ class CotizacionRepository
             ->where('curso.nombre', $curso->nombre)
             ->where('curso.idPais', $idPais)
             ->order_by_asc('ciudad.nombre')
-            ->find_many();
+            ->find_many()
+        ;
 
         $elementos = [];
+
         foreach ($ciudades as $ciudad) {
-            $elementos[$ciudad->idCiudad] = $ciudad->nombre;
+            $elementos[$ciudad->idCiudad] = utf8_encode($ciudad->nombre);
         }
 
         return $elementos;
@@ -157,23 +160,42 @@ class CotizacionRepository
     }
 
     /**
-     * @param $id
+     * @param $idCurso
+     * @param $idPais
+     * @param $idCiudad
      * @return array
      */
-    public function getDatosCentroEducativo($id)
+    public function getDatosCentroEducativo($idCurso, $idPais, $idCiudad)
     {
-        // TODO: implementar.
-        //$sql = "SELECT DISTINCT idCentroEducativo  FROM curso  WHERE  nombre ='$curso' AND idPais=$paisCentro ";
-        //$sql2 = "SELECT  nombre , idCentroEducativo  FROM centroeducativo  WHERE  idCentroEducativo=$row[0] AND idCiudad = $ciudadCentro";
+        $curso = $this->orm
+            ->for_table('curso')
+            ->select('nombre')
+            ->where('idCurso', $idCurso)
+            ->findOne()
+        ;
 
         $centros = $this->orm
-            ->for_table('centroeducativo')
-            ->where('idCiudad', $id)
-            ->findMany();
+            ->for_table('curso')
+            ->distinct()
+            ->select('idCentroEducativo')
+            ->where('nombre', $curso->nombre)
+            ->where('idPais', $idPais)
+            ->find_many()
+        ;
 
         $elementos = [];
         foreach ($centros as $centro) {
-            $elementos[$centro->idCentroEducativo] = $centro->nombre;
+            $centroQ = $this->orm
+                ->for_table('centroeducativo')
+                ->select_many('nombre', 'idCentroEducativo')
+                ->where('idCentroEducativo', $centro->idCentroEducativo)
+                ->where('idCiudad', $idCiudad)
+                ->findOne()
+            ;
+
+            if ($centroQ) {
+                $elementos[$centroQ->idCentroEducativo] = $centroQ->nombre;
+            }
         }
 
         return $elementos;
@@ -198,6 +220,7 @@ class CotizacionRepository
             ->select_many('semanasCurso', 'idCurso')
             ->where('idCentroEducativo', $idCentro)
             ->where('nombre', $curso->nombre)
+            ->group_by('semanasCurso')
             ->order_by_asc('semanasCurso')
             ->findMany();
 
@@ -209,6 +232,12 @@ class CotizacionRepository
         return $elementos;
     }
 
+    /**
+     * @param $idCentro
+     * @param $nombreCurso
+     * @param $semanasCurso
+     * @return array
+     */
     public function getDatosLeccionSemana($idCentro, $nombreCurso, $semanasCurso)
     {
         if ($nombreCurso == $semanasCurso) {
@@ -238,6 +267,7 @@ class CotizacionRepository
             ->where('idCentroEducativo', $idCentro)
             ->where('nombre', $cursoNombre)
             ->where('semanasCurso', $cursoSemanas)
+            ->group_by('semanasCurso')
             ->findMany()
         ;
 

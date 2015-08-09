@@ -45,7 +45,7 @@ class CotizadorController implements ControllerProviderInterface
         $factory->get('/', 'APP\Controller\CotizadorController::index');
         $factory->post('/pais/{id}', 'APP\Controller\CotizadorController::getPais');
         $factory->post('/ciudad/{idCurso}/{idPais}', 'APP\Controller\CotizadorController::getCiudad');
-        $factory->post('/centro/{id}', 'APP\Controller\CotizadorController::getCentroEducativo');
+        $factory->post('/centro/{idCurso}/{idPais}/{idCiudad}', 'APP\Controller\CotizadorController::getCentroEducativo');
         $factory->post('/moneda/{id}', 'APP\Controller\CotizadorController::getMoneda');
         $factory->post('/semana/{idCentro}/{nombreCurso}', 'APP\Controller\CotizadorController::getSemanasCurso');
         $factory->post(
@@ -127,12 +127,14 @@ class CotizadorController implements ControllerProviderInterface
 
     /**
      * @param Application $app
-     * @param $id
+     * @param $idCurso
+     * @param $idPais
+     * @param $idCiudad
      * @return JsonResponse
      */
-    public function getCentroEducativo(Application $app, $id)
+    public function getCentroEducativo(Application $app, $idCurso, $idPais, $idCiudad)
     {
-        return new JsonResponse($app['cotizacion.repository']->getDatosCentroEducativo($id));
+        return new JsonResponse($app['cotizacion.repository']->getDatosCentroEducativo($idCurso, $idPais, $idCiudad));
     }
 
     /**
