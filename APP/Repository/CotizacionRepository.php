@@ -508,8 +508,8 @@ class CotizacionRepository
             2
         );
 
-        $totalConvertido = $moneda ? $total * $moneda->valorRespectoDolar :$total;
-        $sigla = $moneda ? $moneda->sigla : 'dolar';
+        $sigla = $moneda ? $moneda->sigla : 'd';
+        $totalConvertido = $moneda ? $total * ($sigla == 'd'? 1: $moneda->valorRespectoDolar) :$total;
 
         $elementos['TOTAL'] = sprintf('%s %s', $this->getSimboloMoneda($sigla), number_format($totalConvertido, 2));
 
@@ -527,15 +527,15 @@ class CotizacionRepository
 
 
         $datos['BADGE'] = [
-            'CURSO' => round($elementos['CURSO'] * $moneda->valorRespectoDolar, 2),
-            'REGISTRO' => round($elementos['REGISTRO'] * $moneda->valorRespectoDolar, 2),
-            'MATERIALES' => round($elementos['MATERIALES'] * $moneda->valorRespectoDolar, 2),
-            'ESTADIA' => round($elementos['ESTADIA'] * $moneda->valorRespectoDolar, 2),
-            'TRASLADO' => round($elementos['TRASLADO'] * $moneda->valorRespectoDolar, 2),
-            'FINANCIEROS' => round($elementos['FINANCIEROS'] * $moneda->valorRespectoDolar, 2),
-            'ASISTENCIA' => round($elementos['ASISTENCIA'] * $moneda->valorRespectoDolar, 2),
-            'VISA' => round($elementos['VISA'] * $moneda->valorRespectoDolar, 2),
-            'TOTAL' => round($total * $moneda->valorRespectoDolar, 2),
+            'CURSO' => round($elementos['CURSO'] * $sigla == 'd' ? 1 : $moneda->valorRespectoDolar, 2),
+            'REGISTRO' => round($elementos['REGISTRO'] * $sigla == 'd' ? 1 : $moneda->valorRespectoDolar, 2),
+            'MATERIALES' => round($elementos['MATERIALES'] * $sigla == 'd' ? 1 : $moneda->valorRespectoDolar, 2),
+            'ESTADIA' => round($elementos['ESTADIA'] * $sigla == 'd' ? 1 : $moneda->valorRespectoDolar, 2),
+            'TRASLADO' => round($elementos['TRASLADO'] * $sigla == 'd' ? 1 : $moneda->valorRespectoDolar, 2),
+            'FINANCIEROS' => round($elementos['FINANCIEROS'] * $sigla == 'd'? 1:$moneda->valorRespectoDolar, 2),
+            'ASISTENCIA' => round($elementos['ASISTENCIA'] * $sigla == 'd' ? 1 : $moneda->valorRespectoDolar, 2),
+            'VISA' => round($elementos['VISA'] * $sigla == 'd' ? 1 : $moneda->valorRespectoDolar, 2),
+            'TOTAL' => round($total * $sigla == 'd' ? 1 : $moneda->valorRespectoDolar, 2),
             'TOTAL_PESOS' => round($total * $peso, 2),
         ];
 
