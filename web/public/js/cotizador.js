@@ -128,6 +128,11 @@ $(function () {
         getValuesBadges();
     });
 
+    $selectSemanaAlojamiento.on('change', function (event)
+    {
+        getValuesBadges();
+    });
+
     function saveTipoAlimentacion() {
         var textSelected = $selectAlimentacion.find(":selected").text();
         var url = '/saveTipoAlimentacion';// + encodeURIComponent(textSelected);
