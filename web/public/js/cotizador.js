@@ -1,5 +1,6 @@
 $(function () {
 
+    var urlBaseForRequest =window.location.href;
     //Select (los nombres siempre son form_(el select) ver CotizadorController:105 para los nombres de los selects)
     var $selectCurso = $('#form_curso');
     var $selectPais = $('#form_pais');
@@ -15,7 +16,7 @@ $(function () {
     var $selectAlimentacion = $('#form_alimentacion');
     var $selectTraslado = $('#form_traslado');
     var $selectSeguro = $('#form_seguro');
-    var $selectMoneda = $('#form_moneda')
+    var $selectMoneda = $('#form_moneda');
     var $buttonCalcular = $('#boton_calcular');
 
     function onLoad() {
@@ -135,12 +136,12 @@ $(function () {
 
     function saveTipoAlimentacion() {
         var textSelected = $selectAlimentacion.find(":selected").text();
-        var url = '/saveTipoAlimentacion';// + encodeURIComponent(textSelected);
+        var url = urlBaseForRequest+'saveTipoAlimentacion';// + encodeURIComponent(textSelected);
         $.post(url, {tipoAlimentacion: textSelected});
     }
 
     function setMonedaByPais() {
-        var url = '/moneda/' + $selectPais.val();
+        var url = urlBaseForRequest+'moneda/' + $selectPais.val();
         $.post(url, function (value) {
             $("#form_moneda").val($.parseJSON(value));
         }, "html");
@@ -148,7 +149,7 @@ $(function () {
 
     //Agregar datos al select Pais
     function hidratePaises() {
-        var url = '/pais/' + $selectCurso.val();
+        var url = urlBaseForRequest+'pais/' + $selectCurso.val();
         $.post(url, function (data) {
             var ciudades = $.parseJSON(data);
             $.each(ciudades, function (key, value) {
@@ -160,7 +161,7 @@ $(function () {
 
     //Agregar datos al select Ciudad
     function hidrateCiudades() {
-        var url = '/ciudad/' + $selectCurso.val()+'/'+$selectPais.val();
+        var url = urlBaseForRequest+ 'ciudad/' + $selectCurso.val()+'/'+$selectPais.val();
         $.post(url, function (data) {
             var ciudades = $.parseJSON(data);
 
@@ -174,7 +175,7 @@ $(function () {
 
     //Agregar datos al select Centro
     function hidrateCentros() {
-        var url = '/centro/' + $selectCurso.val() + '/' + $selectPais.val() + '/' + $selectCiudad.val();
+        var url = urlBaseForRequest+ 'centro/' + $selectCurso.val() + '/' + $selectPais.val() + '/' + $selectCiudad.val();
         $.post(url, function (data) {
             var ciudades = $.parseJSON(data);
             $.each(ciudades, function (key, value) {
@@ -186,7 +187,7 @@ $(function () {
 
     //Agregar datos al select Semanas
     function hidrateSemanas() {
-        var url = '/semana/' + $selectCentro.val() + '/' + $selectCurso.val();
+        var url = urlBaseForRequest+ 'semana/' + $selectCentro.val() + '/' + $selectCurso.val();
         $.post(url, function (data) {
             var semanas = $.parseJSON(data);
             $.each(semanas, function (key, value) {
@@ -198,7 +199,7 @@ $(function () {
 
     //Agregar datos al select Centro
     function hidrateLeccionesSemana() {
-        var url = '/semanalecciones/' + $selectCentro.val() + '/' + $selectCurso.val() + '/' + $selectSemanas.val();
+        var url = urlBaseForRequest +'semanalecciones/' + $selectCentro.val() + '/' + $selectCurso.val() + '/' + $selectSemanas.val();
         $.post(url, function (data) {
             var ciudades = $.parseJSON(data);
             $.each(ciudades, function (key, value) {
@@ -210,7 +211,7 @@ $(function () {
 
     //Agregar datos al select Centro
     function hidrateJornada() {
-        var url = '/jornadalecciones/' + $selectCentro.val() + '/' + $selectCurso.val() + '/' + $selectSemanas.val() + '/' + $selectLeccionesSemana.val();
+        var url = urlBaseForRequest + 'jornadalecciones/' + $selectCentro.val() + '/' + $selectCurso.val() + '/' + $selectSemanas.val() + '/' + $selectLeccionesSemana.val();
         $.post(url, function (data) {
             var ciudades = $.parseJSON(data);
             $.each(ciudades, function (key, value) {
@@ -221,8 +222,8 @@ $(function () {
     }
 
     function hidrateSelectsForAlojamiento() {
-        var urlAlojamiento = '/tipoAlojamiento';
-        var urlHabitacion = '/tipoHabitacion';
+        var urlAlojamiento = urlBaseForRequest + 'tipoAlojamiento';
+        var urlHabitacion = urlBaseForRequest + 'tipoHabitacion';
 
         $.post(urlAlojamiento, function (data) {
             var datos = $.parseJSON(data);
@@ -242,7 +243,7 @@ $(function () {
     }
 
     function hidrateAlimentacion(){
-        var urlAlimentacion = '/tipoAlimentacion/'+$selectTipoHabitacion.val()+'/'+$selectTipoAlojamiento.val()+'/'+$selectCentro.val();
+        var urlAlimentacion = urlBaseForRequest + 'tipoAlimentacion/'+$selectTipoHabitacion.val()+'/'+$selectTipoAlojamiento.val()+'/'+$selectCentro.val();
         $.post(urlAlimentacion, function (data) {
             var datos = $.parseJSON(data);
             $.each(datos, function (key, value) {
@@ -273,8 +274,8 @@ $(function () {
             var traslado = 0;
         }
 
-        var url =
-            '/cotizacion/' +
+        var url = urlBaseForRequest +
+            'cotizacion/' +
             $selectCurso.val() + '/' +
             $selectPais.val() + '/' +
             $selectSemanas.val() + '/' +
