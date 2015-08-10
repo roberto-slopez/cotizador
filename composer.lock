@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "24b050f0ee91878ee664c3f05c82aaad",
+    "hash": "3a4c84fedabae703d7dfdbad16be4b9b",
     "packages": [
         {
             "name": "arseniew/silex-idiorm-provider",
@@ -618,47 +618,118 @@
             "time": "2013-12-12 10:25:27"
         },
         {
-            "name": "mpdf/mpdf",
-            "version": "v6.0.0",
+            "name": "php-console/php-console",
+            "version": "3.1.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mpdf/mpdf.git",
-                "reference": "a15743d030ce3b5b7be36c6e83f76589b27c3f2c"
+                "url": "https://github.com/barbushin/php-console.git",
+                "reference": "b40e988dcd7686128a47010161ba13e32d5fdb45"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mpdf/mpdf/zipball/a15743d030ce3b5b7be36c6e83f76589b27c3f2c",
-                "reference": "a15743d030ce3b5b7be36c6e83f76589b27c3f2c",
+                "url": "https://api.github.com/repos/barbushin/php-console/zipball/b40e988dcd7686128a47010161ba13e32d5fdb45",
+                "reference": "b40e988dcd7686128a47010161ba13e32d5fdb45",
                 "shasum": ""
             },
             "require": {
-                "ext-mbstring": "*",
-                "php": ">=4.3.10"
+                "php": ">=5.3.0"
+            },
+            "suggest": {
+                "php-console/laravel-service-provider": "*",
+                "php-console/silex-service-provider": "*"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
             "autoload": {
-                "classmap": [
-                    "mpdf.php",
-                    "classes"
-                ]
+                "psr-0": {
+                    "PhpConsole": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-1.0+"
+                "BSD 3-Clause"
             ],
             "authors": [
                 {
-                    "name": "Ian Back"
+                    "name": "Sergey Barbushin",
+                    "email": "barbushin@gmail.com",
+                    "homepage": "http://linkedin.com/in/barbushin"
                 }
             ],
-            "description": "A PHP class to generate PDF files from HTML with Unicode/UTF-8 and CJK support",
-            "homepage": "http://www.mpdf1.com/mpdf/index.php",
+            "description": "Server side PHP library for Google Chrome extension \"PHP Console\".",
+            "homepage": "https://github.com/barbushin/php-console",
             "keywords": [
-                "pdf",
-                "php",
-                "utf-8"
+                "chrome",
+                "debug",
+                "error handler",
+                "errors",
+                "google chrome",
+                "php"
             ],
-            "time": "2015-03-01 10:27:49"
+            "time": "2015-06-30 07:52:47"
+        },
+        {
+            "name": "php-console/silex-service-provider",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/barbushin/php-console-silex.git",
+                "reference": "f78b2d637e25fd1301778617a33fc6dd2e57d1c0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/barbushin/php-console-silex/zipball/f78b2d637e25fd1301778617a33fc6dd2e57d1c0",
+                "reference": "f78b2d637e25fd1301778617a33fc6dd2e57d1c0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3",
+                "php-console/php-console": ">3.1",
+                "silex/silex": "1.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "PhpConsole\\Silex": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD 3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sergey Barbushin",
+                    "email": "barbushin@gmail.com",
+                    "homepage": "http://linkedin.com/in/barbushin"
+                },
+                {
+                    "name": "Ivan",
+                    "homepage": "https://github.com/chi-teck"
+                }
+            ],
+            "description": "Silex service provider to handle PHP errors, dump variables, execute PHP code remotely in Google Chrome",
+            "homepage": "https://github.com/barbushin/php-console-silex",
+            "keywords": [
+                "chrome",
+                "debug",
+                "errors",
+                "logger",
+                "php",
+                "php-console",
+                "service provider",
+                "silex"
+            ],
+            "time": "2014-02-04 19:24:48"
         },
         {
             "name": "pimple/pimple",
@@ -743,56 +814,6 @@
                 "psr-3"
             ],
             "time": "2012-12-21 11:40:51"
-        },
-        {
-            "name": "rafal/javascriptroutingserviceprovider",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Efk3/JavascriptRoutingServiceProvider.git",
-                "reference": "566e16f7d82dfdf88801a39f5c32ffdb56a8dee2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Efk3/JavascriptRoutingServiceProvider/zipball/566e16f7d82dfdf88801a39f5c32ffdb56a8dee2",
-                "reference": "566e16f7d82dfdf88801a39f5c32ffdb56a8dee2",
-                "shasum": ""
-            },
-            "require": {
-                "silex/silex": "~1.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Rafal\\JavascriptRoutingServiceProvider\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Krisztián Fekete",
-                    "email": "en@efk3.net",
-                    "homepage": "http://efk3.net",
-                    "role": "modder"
-                },
-                {
-                    "name": "Rafal Filipek",
-                    "email": "rafal.filipek@gmail.com",
-                    "homepage": "http://twitter.com/rafalfilipek",
-                    "role": "creator"
-                }
-            ],
-            "description": "JavascriptRouting Service Provider provides easy way to access your routes inside Javacript files. It's cool because putting your routes inside js files as static strings sucks.",
-            "homepage": "https://github.com/Efk3/JavascriptRoutingServiceProvider",
-            "time": "2013-07-03 16:35:16"
         },
         {
             "name": "silex/silex",
@@ -2056,7 +2077,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "rafal/javascriptroutingserviceprovider": 20,
         "symfony/var-dumper": 20
     },
     "prefer-stable": false,

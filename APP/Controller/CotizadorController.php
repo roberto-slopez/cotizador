@@ -17,7 +17,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
-use mPDF;
 
 /**
  * Class CotizadorController
@@ -87,6 +86,8 @@ class CotizadorController implements ControllerProviderInterface
         $form = $app['form.factory']
             ->create(new CotizacionType($app['cotizacion.repository']->getDatosIniciales()), [])
         ;
+
+        // for debug example use: \PC::debug([3,4,5,], 'tags');
 
         $app['session']->set('TSTipoAlimentacion', null);
         $app['session']->set('TSdatosCotizacion', null);

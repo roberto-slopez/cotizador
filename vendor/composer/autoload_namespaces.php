@@ -8,9 +8,10 @@ $baseDir = dirname($vendorDir);
 return array(
     'Twig_Extensions_' => array($vendorDir . '/twig/extensions/lib'),
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
-    'Rafal\\JavascriptRoutingServiceProvider\\' => array($vendorDir . '/rafal/javascriptroutingserviceprovider'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log'),
     'Pimple' => array($vendorDir . '/pimple/pimple/lib'),
+    'PhpConsole\\Silex' => array($vendorDir . '/php-console/silex-service-provider/src'),
+    'PhpConsole' => array($vendorDir . '/php-console/php-console/src'),
     'Entea' => array($vendorDir . '/entea/silex-twig-simple-asset-extension'),
     'Doctrine\\DBAL\\' => array($vendorDir . '/doctrine/dbal/lib'),
     'Doctrine\\Common\\Lexer\\' => array($vendorDir . '/doctrine/lexer/lib'),
