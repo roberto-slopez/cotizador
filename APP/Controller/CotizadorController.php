@@ -87,8 +87,6 @@ class CotizadorController implements ControllerProviderInterface
             ->create(new CotizacionType($app['cotizacion.repository']->getDatosIniciales()), [])
         ;
 
-        // for debug example use: \PC::debug([3,4,5,], 'tags');
-
         $app['session']->set('TSTipoAlimentacion', null);
         $app['session']->set('TSdatosCotizacion', null);
 

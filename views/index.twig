@@ -29,26 +29,26 @@
                 {#<!-- Primer segmento -->#}
                 <div class="col-md-4">
                     {{ form_row(form._token) }}
-                    {{ form_row(form.curso, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_row(form.pais, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_row(form.ciudad, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_row(form.centro, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_row(form.semanas, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_row(form.lecciones_por_semana, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_row(form.jornada_de_lecciones, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.curso, {'attr': {'class': 'form-control input-sm'}}) }}
+                    {{ form_row(form.pais, {'attr': {'class': 'form-control input-sm'}}) }}
+                    {{ form_row(form.ciudad, {'attr': {'class': 'form-control input-sm'}}) }}
+                    {{ form_row(form.centro, {'attr': {'class': 'form-control input-sm'}}) }}
+                    {{ form_row(form.semanas, {'attr': {'class': 'form-control input-sm'}}) }}
+                    {{ form_row(form.lecciones_por_semana, {'attr': {'class': 'form-control input-sm'}}) }}
+                    {{ form_row(form.jornada_de_lecciones, {'attr': {'class': 'form-control input-sm'}}) }}
                 </div>
                 {#<!-- Segundo segmento -->#}
                 <div class="col-md-4" id="paso_2">
-                    {{ form_row(form.alojamiento, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_row(form.semanas_de_alojamiento, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_row(form.tipo_de_alojamiento, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_row(form.tipo_de_habitacion, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_row(form.alimentacion, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_row(form.traslado, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.alojamiento, {'attr': {'class': 'form-control input-sm'}}) }}
+                    {{ form_row(form.semanas_de_alojamiento, {'attr': {'class': 'form-control input-sm'}}) }}
+                    {{ form_row(form.tipo_de_alojamiento, {'attr': {'class': 'form-control input-sm'}}) }}
+                    {{ form_row(form.tipo_de_habitacion, {'attr': {'class': 'form-control input-sm'}}) }}
+                    {{ form_row(form.alimentacion, {'attr': {'class': 'form-control input-sm'}}) }}
+                    {{ form_row(form.traslado, {'attr': {'class': 'form-control input-sm'}}) }}
                 </div>
                 {#<!-- Tercer segmento -->#}
                 <div class="col-md-4" id="paso_3">
-                    {{ form_row(form.moneda, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.moneda, {'attr': {'class': 'form-control input-sm'}}) }}
                     <p></p>
                     <ul class="list-group" id="list_valores">
                         <li class="list-group-item">
@@ -93,12 +93,12 @@
                         </li>
                     </ul>
                     <br/>
-                    <div class="btn-group">
-                        <a class="btn btn-danger" href="{{ url('print') }}" target="_blank" id="boton_imprimir">
+                    <div class="btn-group-xs">
+                        <a class="btn btn-danger btn-xs" href="{{ url('print') }}" target="_blank" id="boton_imprimir">
                             <span class="glyphicon glyphicon-print" aria-hidden="true"></span> IMPRIMIR
                         </a>
-                        <button type="button" class="btn btn-success" id="new_cotizacion" onclick="window.location.replace(window.location.href);">
-                            Nueva cotización
+                        <button type="button" class="btn btn-success btn-xs" id="new_cotizacion" onclick="window.location.replace(window.location.href);">
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Nueva cotización
                         </button>
                     </div>
                 </div>

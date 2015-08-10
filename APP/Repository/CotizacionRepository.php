@@ -267,6 +267,7 @@ class CotizacionRepository
             ->where('idCentroEducativo', $idCentro)
             ->where('nombre', $cursoNombre)
             ->where('semanasCurso', $cursoSemanas)
+            ->order_by_asc('semanasCurso')
             ->group_by('semanasCurso')
             ->findMany()
         ;
@@ -306,11 +307,6 @@ class CotizacionRepository
             ->findOne()
         ;
         $semanaLecciones = $curso->leccionesSemana;
-        //$sql = "SELECT DISTINCT jornadaLecciones FROM curso
-        // WHERE idCentroEducativo = $centro AND
-        // nombre = '$curso' and semanasCurso=$semanas_curso AND
-        // leccionesSemana= $leccionesSemana
-        // ORDER BY jornadaLecciones ASC";
 
         $datos = $this->orm
             ->for_table('curso')
@@ -472,6 +468,15 @@ class CotizacionRepository
             ->where('jornadaLecciones', $jornadas)
             ->findOne()
         ;
+        $asistencia = $this->orm
+            ->for_table('v_seguro')
+            ->select('vr_dolares')
+            ->where('semanas', $semanasCurso->semanasCurso)
+            ->where('pais', $pais)
+            ->findOne()
+        ;
+
+        $valorAsistencia = $asistencia ? $asistencia->vr_dolares : 0;
 
         $moneda = $this->orm
             ->for_table('moneda')
@@ -495,7 +500,7 @@ class CotizacionRepository
         $elementos['FINANCIEROS'] = $dato->gastosEnvio;
         $elementos['VISA'] = $dato->derechosVisa;
         $elementos['ESTADIA'] = $estadia;
-        $elementos['ASISTENCIA'] = 0;
+        $elementos['ASISTENCIA'] = $valorAsistencia;
 
         $total = round(
             $elementos['CURSO'] +
@@ -685,7 +690,7 @@ class CotizacionRepository
                 'valor_alojamiento' => $datos['BADGE']['ESTADIA'],
                 'valor_traslado' => $datos['BADGE']['TRASLADO'],
                 'valor_envio' => $datos['BADGE']['FINANCIEROS'],
-                'valor_seguro' => 0,
+                'valor_seguro' => $datos['BADGE']['ASISTENCIA'],
                 'valor_visa' => $datos['BADGE']['VISA'],
                 'valor_total' => $datos['BADGE']['TOTAL'],
                 'valor_total_pesos' => $datos['BADGE']['TOTAL_PESOS'],
