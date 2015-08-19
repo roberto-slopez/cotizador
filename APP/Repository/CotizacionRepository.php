@@ -468,15 +468,6 @@ class CotizacionRepository
             ->where('jornadaLecciones', $jornadas)
             ->findOne()
         ;
-        $asistencia = $this->orm
-            ->for_table('v_seguro')
-            ->select('vr_dolares')
-            ->where('semanas', $semanasCurso->semanasCurso)
-            ->where('pais', $pais)
-            ->findOne()
-        ;
-
-        $valorAsistencia = $asistencia ? $asistencia->vr_dolares : 0;
 
         $moneda = $this->orm
             ->for_table('moneda')
@@ -493,14 +484,32 @@ class CotizacionRepository
         }
 
         $elementos = [];
-        $elementos['CURSO'] = $dato->valorCurso;
-        $elementos['REGISTRO'] = $dato->valorInscripcion;
-        $elementos['MATERIALES'] = $dato->materiales;
-        $elementos['TRASLADO'] = $traslado ? ($dato->traslado > 0 ? $dato->traslado: 0.00) : 0;
-        $elementos['FINANCIEROS'] = $dato->gastosEnvio;
-        $elementos['VISA'] = $dato->derechosVisa;
-        $elementos['ESTADIA'] = $estadia;
-        $elementos['ASISTENCIA'] = $valorAsistencia;
+        $datos = [];
+
+        $monedaLocal = $this->orm
+            ->for_table('moneda')
+            ->where('sigla', $dato->tipoMoneda)
+            ->findOne()
+        ;
+
+        $valorCurso = $dato->valorCurso;
+        $valorInscripcion = $dato->valorInscripcion;
+        $valorMateriales = $dato->materiales;
+        $valorTraslado = $traslado ? ($dato->traslado > 0 ? $dato->traslado: 0.00) : 0;
+        $valorGastosEnvio = $dato->gastosEnvio;
+        $valorDerechoVisa = $dato->derechosVisa;
+        $valorEstadia = $estadia;
+        $valorSeguroCurso = $dato ? $dato->seguro : 0;
+
+        $elementos['CURSO'] = $valorCurso;
+        $elementos['REGISTRO'] = $valorInscripcion;
+        $elementos['MATERIALES'] = $valorMateriales;
+        $elementos['TRASLADO'] = $valorTraslado;
+        $elementos['FINANCIEROS'] = $valorGastosEnvio;
+        $elementos['VISA'] = $valorDerechoVisa;
+        $elementos['ESTADIA'] = $valorEstadia;
+        // el valor de seguro va en asistencia.
+        $elementos['ASISTENCIA'] = $valorSeguroCurso;
 
         $total = round(
             $elementos['CURSO'] +
@@ -515,39 +524,45 @@ class CotizacionRepository
         );
 
         $sigla = $moneda ? $moneda->sigla : 'd';
-        $valorRespectoDolar = $sigla == 'd' ? (int)1 : $moneda->valorRespectoDolar;
-        $totalConvertido = $moneda ? ($total * $valorRespectoDolar) : $total;
+        //$valorRespectoDolar = round($sigla == 'd' ? (int)1 : $moneda->valorRespectoDolar,0);
+        //$totalConvertido = $moneda ? ($total * $valorRespectoDolar) : $total;
 
-        $elementos['TOTAL'] = sprintf('%s %s', $this->getSimboloMoneda($sigla), number_format($totalConvertido, 2));
+        $elementos['TOTAL'] = sprintf('%s %s', $this->getSimboloMoneda($sigla), number_format($total, 0));
 
-        // TODO: no mejorar
-        $peso = 0;
-        if ($moneda != 'p') {
+        $pesoValorRespectoDolar  = 1;
+        if ($monedaSigla != 'p') {
             $monedaQuery = $this->orm
                 ->for_table('moneda')
                 ->where('sigla', 'p')
                 ->findOne()
             ;
 
-            $peso = $monedaQuery->valorRespectoDolar;
+            $pesoValorRespectoDolar = $monedaQuery->valorRespectoDolar;
         }
 
+        $conversionAPesos = 1;
+        if ($monedaLocal->sigla != 'p') {
+            $conversionAPesos = $monedaLocal->valorRespectoDolar;
+        }
+
+        $totalEnPesos = round(($total / $conversionAPesos) * $pesoValorRespectoDolar, 2);
+
         $datos['BADGE'] = [
-            'CURSO' => round($elementos['CURSO'] * $valorRespectoDolar, 2),
-            'REGISTRO' => round($elementos['REGISTRO'] * $valorRespectoDolar, 2),
-            'MATERIALES' => round($elementos['MATERIALES'] * $valorRespectoDolar, 2),
-            'ESTADIA' => round($elementos['ESTADIA'] * $valorRespectoDolar, 2),
-            'TRASLADO' => round($elementos['TRASLADO'] * $valorRespectoDolar, 2),
-            'FINANCIEROS' => round($elementos['FINANCIEROS'] * $valorRespectoDolar, 2),
-            'ASISTENCIA' => round($elementos['ASISTENCIA'] * $valorRespectoDolar, 2),
-            'VISA' => round($elementos['VISA'] * $valorRespectoDolar, 2),
-            'TOTAL' => round($total * $valorRespectoDolar, 2),
-            'TOTAL_PESOS' => round($total * $peso, 2),
-            'TOTAL_STRING' => sprintf('%s %s', $this->getSimboloMoneda($sigla), number_format(round($total * $valorRespectoDolar, 2), 2)),
-            'TOTAL_PESOS_STRING' => sprintf('%s %s', 'COL$', number_format(round($total * $peso, 2), 2)),
+            'CURSO' => round($elementos['CURSO'], 2),
+            'REGISTRO' => round($elementos['REGISTRO'], 2),
+            'MATERIALES' => round($elementos['MATERIALES'], 2),
+            'ESTADIA' => round($elementos['ESTADIA'], 2),
+            'TRASLADO' => round($elementos['TRASLADO'], 2),
+            'FINANCIEROS' => round($elementos['FINANCIEROS'], 2),
+            'ASISTENCIA' => round($elementos['ASISTENCIA'], 2),
+            'VISA' => round($elementos['VISA'], 2),
+            'TOTAL' => round($total),
+            'TOTAL_PESOS' => $totalEnPesos,
+            'TOTAL_STRING' => sprintf('%s %s', $this->getSimboloMoneda($sigla), number_format(round($total), 0)),
+            'TOTAL_PESOS_STRING' => sprintf('%s %s', 'COL$', number_format($totalEnPesos, 0)),
         ];
 
-        $elementos['TOTAL_PESOS'] = sprintf('%s %s', 'COL$', number_format(round($total * $peso, 2), 2));
+        $elementos['TOTAL_PESOS'] = sprintf('%s %s', 'COL$', number_format($totalEnPesos,0));
 
         $pais = $this->orm->for_table('pais')->select_many('nombre','idPais')->where('idPais', $pais)->findOne();
         $ciudad = $this->orm->for_table('ciudad')->select_many('nombre','idCiudad')->where('idCiudad', $cuidad)->findOne();
@@ -574,7 +589,7 @@ class CotizacionRepository
             'ID_PAIS' => $pais->idPais,
             'ID_CIUDAD' => $ciudad->idCiudad,
             'ID_CENTRO' => $centro->idCentroEducativo,
-            'ID_ALOJAMIENTO' => $tipoAlojamiento,
+            'ID_ALOJAMIENTO' => $tipoAlojamiento ?: 0,
             'SIGLA_MONEDA'=> (bool) $monedaSigla? $monedaSigla: 'd',
             'TIPO_MONEDA' => $moneda ? $moneda->nombreMoneda : 'Dolar',
             'CURSO' => $datoCurso->nombre,
@@ -680,7 +695,7 @@ class CotizacionRepository
                 'alojamiento' => $datos['INFO']['ALOJAMIENTO'],
                 'semanas_alojamiento' => $datos['INFO']['SEMANA_ALOJAMIENTO'],
                 'tipo_alojamiento' => $datos['INFO']['ID_ALOJAMIENTO'],
-                'tipo_alimentacion' => $this->session->get('TSTipoAlimentacion'),
+                'tipo_alimentacion' => $this->session->get('TSTipoAlimentacion') ?: 0,
                 'traslado' => $datos['INFO']['TRASLADO'],
                 'seguro' => 'NO',
                 'pasaje' => 'NO',

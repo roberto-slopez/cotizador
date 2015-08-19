@@ -113,10 +113,10 @@ $(function () {
         getValuesBadges();
     });
 
-    $selectMoneda.on('change', function (event)
+    /*$selectMoneda.on('change', function (event)
     {
         getValuesBadges();
-    });
+    });*/
 
     $selectAlimentacion.on('change', function (event)
     {
