@@ -545,6 +545,9 @@ class CotizacionRepository
             $conversionAPesos = $monedaLocal->valorRespectoDolar;
         }
 
+        $pesoValorRespectoDolar = $pesoValorRespectoDolar ?: 1;
+        $conversionAPesos = $conversionAPesos ?: 1;
+
         $totalEnPesos = round(($pesoValorRespectoDolar * $conversionAPesos) * $total, 2);
 
         $datos['BADGE'] = [
