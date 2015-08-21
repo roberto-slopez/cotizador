@@ -545,7 +545,7 @@ class CotizacionRepository
             $conversionAPesos = $monedaLocal->valorRespectoDolar;
         }
 
-        $totalEnPesos = round(($total * $conversionAPesos) / $pesoValorRespectoDolar, 2);
+        $totalEnPesos = round(($pesoValorRespectoDolar * $conversionAPesos) * $total, 2);
 
         $datos['BADGE'] = [
             'CURSO' => round($elementos['CURSO'], 2),
