@@ -541,8 +541,10 @@ class CotizacionRepository
         }
 
         $conversionAPesos = 1;
-        if ($monedaLocal->sigla != 'p') {
-            $conversionAPesos = $monedaLocal->valorRespectoDolar;
+        if ($monedaLocal) {
+            if ($monedaLocal->sigla != 'p') {
+                $conversionAPesos = $monedaLocal->valorRespectoDolar;
+            }
         }
 
         $pesoValorRespectoDolar = $pesoValorRespectoDolar ?: 1;
@@ -551,13 +553,13 @@ class CotizacionRepository
         $totalEnPesos = round(($pesoValorRespectoDolar * $conversionAPesos) * $total, 2);
 
         $datos['BADGE'] = [
-            'CURSO' => round($elementos['CURSO'], 2),
-            'REGISTRO' => round($elementos['REGISTRO'], 2),
-            'MATERIALES' => round($elementos['MATERIALES'], 2),
-            'ESTADIA' => round($elementos['ESTADIA'], 2),
-            'TRASLADO' => round($elementos['TRASLADO'], 2),
-            'FINANCIEROS' => round($elementos['FINANCIEROS'], 2),
-            'ASISTENCIA' => round($elementos['ASISTENCIA'], 2),
+            'CURSO' => round(isset($elementos['CURSO']) ? $elementos['CURSO'] : 0, 2),
+            'REGISTRO' => round(isset($elementos['REGISTRO']) ? $elementos['REGISTRO'] : 0, 2),
+            'MATERIALES' => round(isset($elementos['MATERIALES']) ? $elementos['MATERIALES'] : 0, 2),
+            'ESTADIA' => round(isset($elementos['ESTADIA']) ? $elementos['ESTADIA'] : 0, 2),
+            'TRASLADO' => round(isset($elementos['TRASLADO']) ? $elementos['TRASLADO'] : 0, 2),
+            'FINANCIEROS' => round(isset($elementos['FINANCIEROS']) ? $elementos['FINANCIEROS'] : 0, 2),
+            'ASISTENCIA' => round(isset($elementos['ASISTENCIA']) ? $elementos['ASISTENCIA'] : 0, 2),
             'VISA' => round($elementos['VISA'], 2),
             'TOTAL' => round($total),
             'TOTAL_PESOS' => $totalEnPesos,
