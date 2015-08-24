@@ -465,6 +465,7 @@ class CotizacionRepository
             ->where('idPais', $pais)
             ->where('semanasCurso', $semanasCurso->semanasCurso)
             ->where('leccionesSemana', $leccionesSemana->leccionesSemana)
+            ->where('idCentroEducativo', $centro)
             ->where('jornadaLecciones', $jornadas)
             ->findOne()
         ;
