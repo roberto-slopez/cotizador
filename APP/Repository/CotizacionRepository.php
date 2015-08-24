@@ -477,10 +477,10 @@ class CotizacionRepository
         ;
 
         $estadia  = 0;
+        $numeroSemanas = $semanasAlojamiento != null ? (int)$semanasAlojamiento + 1 : 0;
         // ver si es posible usar una constante
         if ($alojamiento == 'SI') {
             // se suma 1 por que al construir un array con range los indices inician en 0 TODO: mejorar
-            $numeroSemanas = $semanasAlojamiento != null ? (int)$semanasAlojamiento + 1 : 0;
             $estadia = $numeroSemanas > 0 ? $tipoAlimentacion * $numeroSemanas :$tipoAlimentacion;
         }
 
@@ -606,7 +606,7 @@ class CotizacionRepository
             'LECCIONES_SEMANA' => $leccionesSemana->leccionesSemana,
             'JORNADA_LECCIONES' => $jornadas,
             'ALOJAMIENTO' => $alojamiento ? $alojamiento : 'NO',
-            'SEMANA_ALOJAMIENTO' => $semanasAlojamiento ? $semanasAlojamiento:0,
+            'SEMANA_ALOJAMIENTO' => $numeroSemanas  ? $numeroSemanas :0,
             'TIPO_ALOJAMIENTO' => $tipoAlojamientoResult,
             'TIPO_HABITACION' => isset($this->tipoHabitacion[$tipoHabitacion]) ? $this->tipoHabitacion[$tipoHabitacion] : 0,
             'TRASLADO' => $traslado ? $traslado : 'NO',

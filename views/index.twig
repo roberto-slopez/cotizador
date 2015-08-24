@@ -7,12 +7,17 @@
     <title>Cotizador en línea</title>
     <link href="{{ asset('/public/css/bootstrap.min.css')}}" rel="stylesheet">
     <link rel="shortcut icon" href="{{ asset('/public/fav.ico') }}" type="image/icon">
+    <style>
+        body {
+            font-size: 9px;
+        }
+    </style>
 </head>
 <body>
 <div class="row">
     <div class="col-md-2"></div>
 
-    <div class="col-md-8">
+    <div class="col-md-6 col-md-offset-1">
         <img src="{{ asset('/public/img/logo.png')}}" alt="" class="img-thumbnail">
 
         <div class="page-header">
