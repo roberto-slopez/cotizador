@@ -268,7 +268,7 @@ class CotizacionRepository
             ->where('nombre', $cursoNombre)
             ->where('semanasCurso', $cursoSemanas)
             ->order_by_asc('semanasCurso')
-            ->group_by('semanasCurso')
+            ->group_by('leccionesSemana')
             ->findMany()
         ;
 
