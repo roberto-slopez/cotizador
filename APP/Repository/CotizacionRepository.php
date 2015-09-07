@@ -368,7 +368,7 @@ class CotizacionRepository
     {
         $datos = $this->orm
             ->for_table($tipoHabitacion)
-            ->select_many('sinComida', 'desayuno', 'mediaPension', 'completa', 'derechoCocina')
+            ->select_many('sinComida', 'desayuno', 'mediaPension', 'completa', 'derechoCocina', 'reserva')
             ->where('idCentroEducativo', $centro)
             ->where('tipoAlojamiento', $tipoAlojamiento)
             ->findOne()
@@ -387,16 +387,16 @@ class CotizacionRepository
             $elementos [0] = 'No Aplica';
         } else {
             if ($datos->sinComida != 0) {
-                $elementos[$datos->sinComida] = 'Sin alimentación';
+                $elementos[sprintf('%s_%s',$datos->sinComida, $datos->reserva)] = 'Sin alimentación';
             }
             if ($datos->desayuno != 0) {
-                $elementos[$datos->desayuno] = 'Desayuno';
+                $elementos[sprintf('%s_%s',$datos->desayuno, $datos->reserva)] = 'Desayuno';
             }
             if ($datos->mediaPension != 0) {
-                $elementos[$datos->mediaPension] = 'Desayuno y cena';
+                $elementos[sprintf('%s_%s',$datos->mediaPension, $datos->reserva)] = 'Desayuno y cena';
             }
             if ($datos->derechoCocina != 0) {
-                $elementos[$datos->derechoCocina] = 'Derecho Cocina';
+                $elementos[sprintf('%s_%s',$datos->derechoCocina, $datos->reserva)] = 'Derecho Cocina';
             }
         }
 
@@ -477,11 +477,19 @@ class CotizacionRepository
         ;
 
         $estadia  = 0;
+        $alimentacionTipo = 0;
+        $reserva = 0;
+
         $numeroSemanas = $semanasAlojamiento != null ? (int)$semanasAlojamiento + 1 : 0;
+
+        if ($tipoAlimentacion) {
+            list($alimentacionTipo, $reserva) = explode('_', $tipoAlimentacion);
+        }
+
         // ver si es posible usar una constante
         if ($alojamiento == 'SI') {
             // se suma 1 por que al construir un array con range los indices inician en 0 TODO: mejorar
-            $estadia = $numeroSemanas > 0 ? $tipoAlimentacion * $numeroSemanas :$tipoAlimentacion;
+            $estadia = ($numeroSemanas > 0 ? $alimentacionTipo * $numeroSemanas : $alimentacionTipo) + $reserva;
         }
 
         $elementos = [];

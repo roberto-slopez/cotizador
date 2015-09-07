@@ -40,7 +40,7 @@ $app->register(
         'idiorm.db.options' => [
             'connection_string' => 'mysql:host=localhost;dbname=cotizacion',
             'username' => 'root',
-            'password' => '1234',
+            'password' => '',
             'id_column_overrides' => [
                 'cotizaciones' => 'cod'
             ],
